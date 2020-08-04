@@ -1,0 +1,143 @@
+SELECT 
+    id_det_vis_prop,
+    valor,
+    id_prop_mat_cli,
+    id_visita
+FROM (
+    SELECT 
+        f.id_det_vis_prop,
+        f.valor,
+        f.id_prop_mat_cli,
+        f.id_visita
+     FROM `detalle_visita_prop` f
+    INNER JOIN visita a USING(id_visita)
+    INNER JOIN prop_cli_mat b USING(id_prop_mat_cli)
+    ORDER BY f.id_det_vis_prop DESC, a.fecha_r DESC
+) t1
+GROUP BY id_prop_mat_cli
+ORDER BY id_det_vis_prop DESC
+
+SELECT recome, num_lote, num_anexo, especie, nom_fantasia, razon_social, predio, lote, coo_utm_ampros, crop, group_concat(CONCAT(id_det_vis_prop,' && ', id_prop_mat_cli,' && ', valor) SEPARATOR ' | ') AS datos FROM
+(
+    SELECT id_det_vis_prop, id_ficha, id_visita, id_ac, recome, num_lote, num_anexo, especie, nom_fantasia, razon_social, predio, lote, coo_utm_ampros, id_prop_mat_cli, valor, group_concat(CONCAT(HP.anno,' ==> ', HP.descripcion) SEPARATOR ' | ') AS crop FROM
+        (
+            SELECT DVP.id_det_vis_prop, F.id_ficha, V.id_visita, AC.id_ac, V.recome, AC.id_lote AS num_lote, AC.num_anexo, E.nombre AS especie, M.nom_fantasia, A.razon_social, P.nombre AS predio, L.nombre AS lote, L.coo_utm_ampros, PCM.id_prop_mat_cli, DVP.valor
+            FROM quotation Q
+            INNER JOIN detalle_quotation DQ ON DQ.id_quotation = Q.id_quotation
+            INNER JOIN materiales M ON M.id_materiales = DQ.id_materiales
+            INNER JOIN anexo_contrato AC ON AC.id_materiales = M.id_materiales
+            INNER JOIN ficha F ON F.id_ficha = AC.id_ficha
+            INNER JOIN visita V ON V.id_ac = AC.id_ac
+            INNER JOIN detalle_visita_prop DVP ON DVP.id_visita = V.id_visita
+            INNER JOIN prop_cli_mat PCM ON PCM.id_prop_mat_cli = DVP.id_prop_mat_cli
+            INNER JOIN especie E ON E.id_esp = M.id_esp
+            INNER JOIN contrato_agricultor CA ON CA.id_cont = AC.id_cont
+            INNER JOIN agricultor A ON A.id_agric = CA.id_agric
+            INNER JOIN lote L ON L.id_lote = AC.id_lote
+            INNER JOIN predio P ON P.id_pred = L.id_pred
+            
+            switch($_SESSION["tipo"]){
+                case 1:
+                    $sql.= "INNER JOIN cli_pcm CPCM ON CPCM.id_prop_mat_cli = PCM.id_prop_mat_cli
+                            WHERE V.id_est_vis = '2' AND Q.id_tempo = ? AND Q.id_cli = ? AND CPCM.ver = '1' AND PCM.id_etapa = ? ";
+                break;
+                case 2:
+                    $sql.= "WHERE V.id_est_vis = '2' AND Q.id_tempo = ? AND F.id_agric = ? AND PCM.id_etapa = ? ";
+                break;
+                case 3:
+                    $sql.= "INNER JOIN usuario_anexo UA ON UA.id_ac = AC.id_ac
+                            INNER JOIN usuarios U ON U.id_usuario = UA.id_usuario
+                            WHERE V.id_est_vis = '2' AND Q.id_tempo = ? AND U.id_usuario = ? AND PCM.id_etapa = ? ";
+                break;
+                case 4:
+                case 5:
+                    $sql.= "WHERE V.id_est_vis = '2' AND Q.id_tempo = ? AND PCM.id_etapa = ? ";
+                break;
+
+            }
+
+            ORDER BY DVP.id_det_vis_prop DESC
+        ) AS Info
+    INNER JOIN historial_predio HP USING(id_ficha)
+    GROUP BY id_prop_mat_cli 
+    ORDER BY id_prop_mat_cli DESC
+) AS Casi
+GROUP BY id_ac 
+ORDER BY id_ac DESC
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT recome, num_lote, num_anexo, especie, nom_fantasia, razon_social, predio, lote, coo_utm_ampros, crop, group_concat(CONCAT(id_det_vis_prop,' && ', id_prop_mat_cli,' && ', valor) SEPARATOR ' | ') AS datos FROM
+(
+    SELECT id_det_vis_prop, id_ficha, id_visita, id_ac, recome, num_lote, num_anexo, especie, nom_fantasia, razon_social, predio, lote, coo_utm_ampros, id_prop_mat_cli, valor, group_concat(CONCAT(HP.anno,' ==> ', HP.descripcion) SEPARATOR ' | ') AS crop FROM
+        (
+            SELECT DVP.id_det_vis_prop, F.id_ficha, V.id_visita, AC.id_ac, V.recome, AC.id_lote AS num_lote, AC.num_anexo, E.nombre AS especie, M.nom_fantasia, A.razon_social, P.nombre AS predio, L.nombre AS lote, L.coo_utm_ampros, PCM.id_prop_mat_cli, DVP.valor
+            FROM quotation Q
+            INNER JOIN detalle_quotation DQ ON DQ.id_quotation = Q.id_quotation
+            INNER JOIN materiales M ON M.id_materiales = DQ.id_materiales
+            INNER JOIN anexo_contrato AC ON AC.id_materiales = M.id_materiales
+            INNER JOIN ficha F ON F.id_ficha = AC.id_ficha
+            INNER JOIN visita V ON V.id_ac = AC.id_ac
+            INNER JOIN detalle_visita_prop DVP ON DVP.id_visita = V.id_visita
+            INNER JOIN prop_cli_mat PCM ON PCM.id_prop_mat_cli = DVP.id_prop_mat_cli
+            INNER JOIN especie E ON E.id_esp = M.id_esp
+            INNER JOIN contrato_agricultor CA ON CA.id_cont = AC.id_cont
+            INNER JOIN agricultor A ON A.id_agric = CA.id_agric
+            INNER JOIN lote L ON L.id_lote = AC.id_lote
+            INNER JOIN predio P ON P.id_pred = L.id_pred
+            WHERE V.id_est_vis = '2' AND Q.id_tempo = '1' AND PCM.id_etapa = '2' 
+            ORDER BY DVP.id_det_vis_prop DESC
+        ) AS Info
+    INNER JOIN historial_predio HP USING(id_ficha)
+    GROUP BY id_prop_mat_cli 
+    ORDER BY id_prop_mat_cli DESC
+) AS Casi
+GROUP BY id_ac 
+ORDER BY id_ac DESC

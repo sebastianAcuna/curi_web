@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>correo plantilla</title>
+</head>
+<body style="background-color:#216144;background-image: url('http://www.zcloud16.cl/curimapu/assets/images/fondo.jpeg'); background-repeat: no-repeat; background-size: cover; margin:0 auto; ">
+    <div style="background: white; background: rgba(255, 255, 255, 0.8); width:800px; max-width: 800px; margin-top:10px; margin-left: auto; margin-right:auto; color:black; ">
+
+        <div> <div style="text-align:center;"><h1>Se ha generado una nueva visita</h1></div> </div>
+    
+            <div style="text-align:center;"> <h2> Detalle de la visita</h2>  </div>
+            <div style="text-align:left;">
+                <ul>
+                    <li style='font-size:18px;'> <strong> Agronomo:</strong> {NOMBREAGRONOMO} </li>
+                </ul>
+                <ul style="margin-top:20px;">
+                    <li style='font-size:18px;'>Agricultor:</li>
+                    <ul>
+                        <li style="margin-top:10px;font-size:18px;"> <strong> Nombre: </strong> {NOMBREAGRICULTOR} </li>
+                        <li style='font-size:18px;'> <strong> Rut: </strong>{RUTAGRICULTOR} </li>
+                        <li style='font-size:18px;'> <strong> Direccion: </strong>{DIRECCIONAGRICULTOR} </li>
+                        <li style='font-size:18px;'> <strong> Fundo: </strong>{FUNDOPOTRERO} </li>
+                    </ul>
+                </ul>
+    
+                <ul style="margin-top:10px;">
+                    <li style='font-size:18px;'>Información de la visita:</li>
+                    <ul> {INFORMACIONVISITA} </ul>
+                </ul>
+               
+            </div>
+    
+            <div style="text-align:center;"> <h2> Puede encontrar las fotos adjuntas en el correo.</h2></div>
+            <div style="text-align:center;padding: 10px;"> <p> {NOMBREEMPRESA} </p > </div>
+        
+        </div>
+</body>
+</html> 
