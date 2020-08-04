@@ -1635,10 +1635,8 @@ $('#modalRel').on('shown.bs.modal', function (e) {
     
 });
 
-
 /*  PAGINACION  */
 
-        
 paginacion.addEventListener("click", function(e){
     if(e.target && e.target.nodeName == "BUTTON" ) {
         var pagina = e.target.dataset.page;
@@ -1661,7 +1659,6 @@ paginacion.addEventListener("click", function(e){
 });
 
 /*  END PAGINACION  */
-
 
 
  /* RELACION */
