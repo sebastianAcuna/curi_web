@@ -7,7 +7,7 @@
 
         public function __construct() {
             if($_SESSION["tipo_curimapu"] == 5 || $_SESSION["tipo_curimapu"] == 3){
-                $this->arreglo=array("traerDatosActivas","totalDatosActivas","traerDatosProvisorias","totalDatosProvisorias","crearProspecto","editarProspecto","editarProspectoA","activarProspecto","rechazarProspecto","traerInfoActiva","traerInfoActivar","traerInfoProvisoria","traerRegiones","traerProvincias","traerComunas","traerInfoAgri","traerImagenes","eliminarImagen","subirImagen");
+                $this->arreglo=array("traerDatosActivas","totalDatosActivas","traerDatosProvisorias","totalDatosProvisorias","crearProspecto","editarProspecto","editarProspectoA","activarProspecto","rechazarProspecto","traerInfoActiva","traerInfoActivar","traerInfoProvisoria","traerRegiones","traerProvincias","traerComunas","traerInfoAgri","traerImagenes","eliminarImagen","subirImagen","cambiarEstado");
             }else if($_SESSION["tipo_curimapu"] == 4){
                 $this->arreglo=array("traerDatosActivas","totalDatosActivas","traerDatosProvisorias","totalDatosProvisorias","traerInfoActiva","traerImagenes","eliminarImagen");
             }

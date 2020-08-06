@@ -135,17 +135,17 @@
 
         array_push($arrayProblemas, array("codigo_respuesta"=> $codigoProblema, "mensaje_respuesta"=>$problema));
 
-        if(sizeof($arrayProblemas) > 0){
-            $fechaHoraInicio = date('Y-m-d H:i:s');
-            $DescErrorCorreo="";   
-            $DescErrorCorreo=" PROBLEMAS DESCARGANDO DATOS PRIMERA VEZ: \n\n";
-            $DescErrorCorreo.="  - ID DISPOSITIVO: ".$id."\n";
-            $DescErrorCorreo.="  - ID USUARIO: ".$idUsuario."\n";
-            $DescErrorCorreo.="  - FECHA HORA SERVIDOR: ".$fechaHoraInicio."\n"; 
-            //ENVIAR CORREO
-            $Cabecera="From: ERROR MODULE CURIMAPU<>";
-            mail("sacuna@zionit.cl","ERROR SUBIR DATOS CURIMAPU",$DescErrorCorreo,$Cabecera);
-        }
+        // if(sizeof($arrayProblemas) > 0){
+        //     $fechaHoraInicio = date('Y-m-d H:i:s');
+        //     $DescErrorCorreo="";   
+        //     $DescErrorCorreo=" PROBLEMAS DESCARGANDO DATOS PRIMERA VEZ: \n\n";
+        //     $DescErrorCorreo.="  - ID DISPOSITIVO: ".$id."\n";
+        //     $DescErrorCorreo.="  - ID USUARIO: ".$idUsuario."\n";
+        //     $DescErrorCorreo.="  - FECHA HORA SERVIDOR: ".$fechaHoraInicio."\n"; 
+        //     //ENVIAR CORREO
+        //     $Cabecera="From: ERROR MODULE CURIMAPU<>";
+        //     mail("sacuna@zionit.cl","ERROR SUBIR DATOS CURIMAPU",$DescErrorCorreo,$Cabecera);
+        // }
 
         $arrayGeneral = array(
             "id"=>$id,

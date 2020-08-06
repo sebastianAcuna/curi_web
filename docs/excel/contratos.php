@@ -11,6 +11,10 @@
     $order = (isset($_REQUEST['Orden'])?$_REQUEST['Orden']:NULL);
     $order = filter_var($order,FILTER_SANITIZE_NUMBER_INT);
 
+    $ficha = (isset($_REQUEST['FCont0'])?$_REQUEST['FCont0']:NULL);
+    $ficha = filter_var($ficha,FILTER_SANITIZE_NUMBER_INT);
+    if($ficha != "") $tituloFiltros .= " Ficha (".$ficha.")";
+
     $numeroC = (isset($_REQUEST['FCont1'])?$_REQUEST['FCont1']:NULL);
     $numeroC = filter_var($numeroC,FILTER_SANITIZE_STRING);
     if($numeroC != "") $tituloFiltros .= " Numero de contrato (".$numeroC.")";
@@ -28,7 +32,7 @@
     if($agricultor != "") $tituloFiltros .= " Agricultor (".$agricultor.")";
     
     $especie = (isset($_REQUEST['FCont5'])?$_REQUEST['FCont5']:NULL);
-    $especie = filter_var($especie,FILTER_SANITIZE_STRING);
+    $especie = filter_var($especie,FILTER_SANITIZE_NUMBER_INT);
     if($especie != "") $tituloFiltros .= " Especie (".$especie.")";
     
     $variedad = (isset($_REQUEST['FCont6'])?$_REQUEST['FCont6']:NULL);
@@ -67,25 +71,36 @@
     $malezas = filter_var($malezas,FILTER_SANITIZE_STRING);
     if($malezas != "") $tituloFiltros .= " Malezas (".$malezas.")";
 
+    /* CONEXION */
+    $conexion = new Conectar();
+    $conexion = $conexion->conexion();
+
+    /********/
+    /* BIND */
+    /********/
+
+    $bind = array();
+
     /**********/
     /* Filtro */
     /**********/
 
-    $filtro = " WHERE A.id_ac != 0";
-    if($numeroC != "") $filtro .= " AND C.num_contrato LIKE '%$numeroC%'";
-    if($numeroA != "") $filtro .= " AND A.num_anexo LIKE '%$numeroA%'";
-    if($cliente != "") $filtro .= " AND CL.razon_social LIKE '%$cliente%'";
-    if($agricultor != "") $filtro .= " AND AG.razon_social LIKE '%$agricultor%'";
-    if($especie != "") $filtro .= " AND E.nombre LIKE '%$especie%'";
-    if($variedad != "") $filtro .= " AND M.nom_hibrido LIKE '%$variedad%'";
-    if($base != "") $filtro .= " AND A.base LIKE '%$base%'";
-    if($precio != "") $filtro .= " AND A.precio LIKE '%$precio%'";
-    if($humedad != "") $filtro .= " AND A.humedad LIKE '%$humedad%'";
-    if($germinacion != "") $filtro .= " AND A.germinacion LIKE '%$germinacion%'";
-    if($purezaG != "") $filtro .= " AND A.pureza_genetica LIKE '%$purezaG%'";
-    if($purezaF != "") $filtro .= " AND A.pureza_fisica LIKE '%$purezaF%'";
-    if($enfermedades != "") $filtro .= " AND A.enfermedades LIKE '%$enfermedades%'";
-    if($malezas != "") $filtro .= " AND A.maleza LIKE '%$malezas%'";
+    $filtro = "";
+    if($ficha != ""){ $filtro .= " AND A.id_ficha = ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $ficha)); }
+    if($numeroC != ""){ $filtro .= " AND C.num_contrato LIKE ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $numeroC)); }
+    if($numeroA != ""){ $filtro .= " AND A.num_anexo LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$numeroA."%")); }
+    if($cliente != ""){ $filtro .= " AND CL.razon_social LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$cliente."%")); }
+    if($agricultor != ""){ $filtro .= " AND AG.razon_social LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$agricultor."%")); }
+    if($especie != ""){ $filtro .= " AND M.id_esp LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$especie."%")); }
+    if($variedad != ""){ $filtro .= " AND M.nom_hibrido LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$variedad."%")); }
+    if($base != ""){ $filtro .= " AND A.base = ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $base)); }
+    if($precio != ""){ $filtro .= " AND A.precio = ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $precio)); }
+    if($humedad != ""){ $filtro .= " AND A.humedad LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$humedad."%")); }
+    if($germinacion != ""){ $filtro .= " AND A.germinacion LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$germinacion."%")); }
+    if($purezaG != ""){ $filtro .= " AND A.pureza_genetica LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$purezaG."%")); }
+    if($purezaF != ""){ $filtro .= " AND A.pureza_fisica LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$purezaF."%")); }
+    if($enfermedades != ""){ $filtro .= " AND A.enfermedades LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$enfermedades."%")); }
+    if($malezas != ""){ $filtro .= " AND A.maleza LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$malezas."%")); }
 
     /*********/
     /* Orden */
@@ -174,8 +189,14 @@
         case 27:
             $orden = "ORDER BY A.maleza ASC";
         break;
-        case 27:
+        case 28:
             $orden = "ORDER BY A.maleza DESC";
+        break;
+        case 29:
+            $orden = "ORDER BY A.id_ficha ASC";
+        break;
+        case 30:
+            $orden = "ORDER BY A.id_ficha DESC";
         break;
         default:
             $orden = "ORDER BY C.num_contrato ASC";
@@ -186,8 +207,8 @@
     /* SQL */
     /*******/
 
-    $conexion = new Conectar();
-    $sql = "SELECT C.num_contrato, A.num_anexo, CL.razon_social, AG.razon_social AS agricultor, E.nombre, M.nom_hibrido, A.base, A.precio, A.humedad, A.germinacion, A.pureza_genetica, A.pureza_fisica, A.enfermedades, A.maleza FROM anexo_contrato A 
+    $sql = "SELECT A.id_ficha, C.num_contrato, A.num_anexo, CL.razon_social, AG.razon_social AS agricultor, E.nombre, M.nom_hibrido, A.base, A.precio, A.humedad, A.germinacion, A.pureza_genetica, A.pureza_fisica, A.enfermedades, A.maleza 
+            FROM anexo_contrato A 
             INNER JOIN contrato_anexo_temporada CAT ON (CAT.id_ac = A.id_ac)
             INNER JOIN contrato_agricultor C ON C.id_cont = CAT.id_cont 
             INNER JOIN agricultor AG ON AG.id_agric = C.id_agric 
@@ -197,10 +218,27 @@
             INNER JOIN quotation Q ON Q.id_quotation = DQ.id_quotation 
             INNER JOIN contrato_cliente CC ON CC.id_cli = Q.id_cli 
             INNER JOIN cliente CL ON CL.id_cli= CC.id_cli 
-            $filtro AND CAT.id_tempo = ? $orden";
-    $conexion = $conexion->conexion();
+            WHERE A.id_ac != 0 AND CAT.id_tempo = ? $filtro GROUP BY A.num_anexo $orden";
+
     $consulta = $conexion->prepare($sql);
+
     $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
+
+    $posicion = 1;
+    foreach($bind AS $dato){
+        $posicion++;
+        switch($dato["Tipo"]){
+            case "STR":
+                $consulta->bindValue($posicion,$dato["Dato"], PDO::PARAM_STR);
+            break;
+            case "INT":
+                $consulta->bindValue($posicion,$dato["Dato"], PDO::PARAM_INT);
+            break;
+
+        }
+
+    }
+
     $consulta->execute();
 
     $contratos = array();
@@ -221,6 +259,7 @@
 
     }
 
+    /* CIERRE CONEXION */
     $consulta = NULL;
     $conexion = NULL;
 
@@ -241,13 +280,14 @@
                 if(strlen($tituloFiltros) > 46):
             ?>
             <tr>
-                <th colspan="18" style="background: lightsteelblue"> <?=$tituloFiltros?> </th>
+                <th colspan="16" style="background: lightsteelblue"> <?=$tituloFiltros?> </th>
             </tr>
             <?php
                 endif;
             ?>
             <tr style="font-size: 1em; background: lightgreen">
                 <th> # </th>
+                <th> Ficha </th>
                 <th> Número contrato </th>
                 <th> Número anexo </th>
                 <th> Cliente </th>
@@ -274,6 +314,7 @@
         ?>
                     <tr> 
                         <td><?=$i?></td>
+                        <td><?=$dato["id_ficha"]?></td>
                         <td><?=$dato["num_contrato"]?></td>
                         <td><?=$dato["num_anexo"]?></td>
                         <td><?=$dato["razon_social"]?></td>
@@ -294,7 +335,7 @@
             else:
         ?>
                 <tr> 
-                    <td colspan="15" align="center"> No existen registros asociados a los parametros establecidos en el contrato </td>
+                    <td colspan="16" align="center"> No existen registros asociados a los parametros establecidos en el contrato </td>
                 </tr>
         <?php
             endif;

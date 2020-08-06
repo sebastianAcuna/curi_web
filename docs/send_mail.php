@@ -12,8 +12,12 @@ require_once '../../../docs/pdf/info_visita.php';
 
 function enviarCorreoDesdeSubida($idVisita){
 
-    $conexion = new Conectar();
-    $conexion = $conexion->conexion();
+    $conexiones = new Conectar();
+    
+
+
+    $conexion = $conexiones->conexion();
+
 
 
 $html = file_get_contents('../../../docs/correo_plantilla.html');
@@ -21,10 +25,12 @@ $html = file_get_contents('../../../docs/correo_plantilla.html');
 
 
 $contenidoAdjunto = array();
+$destinatario = array();
+$correoProd = array();
 
 $sql = "SELECT 
 U.nombre, U.apellido_p, U.apellido_m, 
-A.razon_social AS nombre_agricultor, A.rut AS rut_agricultor, A.direccion AS direccion_agricultor,
+A.razon_social AS nombre_agricultor, A.rut AS rut_agricultor, A.direccion AS direccion_agricultor, A.email AS correo_agricultor,
 L.nombre AS nombre_lote,
 P.nombre AS nombre_predio,
 V.fecha_r AS fecha_visita, V.hora_r AS hora_visita, V.obs AS observacion_visita, V.recome AS recomendacion_visita,
@@ -55,7 +61,6 @@ if($arrayVisita != null && sizeof($arrayVisita) > 0){
 
         if($value["fecha_visita"] != null){
             list($y, $m, $d) = explode("-", $value["fecha_visita"]);
-
             $fechaVisitaConHora =  $d."-".$m."-".$y." ".$value["hora_visita"]; 
         }
 
@@ -109,6 +114,27 @@ if($arrayVisita != null && sizeof($arrayVisita) > 0){
 
         $nombre = $value["nombre_agricultor"];
 
+        $emails = explode("/", $value["correo_agricultor"]);
+
+
+        foreach($emails as $correos){
+
+            $tmp = array(
+                "correo" => $correos,
+                "nombre" => $nombre
+             );
+
+            array_push($correoProd, $tmp);
+
+        }
+
+        array_push($correoProd, array(
+            "nombre"=>"seba.nobody@gmail.com",
+            "nombre"=>"Sebastian Acuña"
+        ));
+
+
+
         $sql = "SELECT * FROM fotos WHERE id_visita  = :id_visita AND tipo = :tipo AND vista = :vista ;";
         $consulta  = $conexion->prepare($sql);
         $consulta->bindValue(":id_visita", $value["id_visita"], PDO::PARAM_INT);
@@ -123,7 +149,6 @@ if($arrayVisita != null && sizeof($arrayVisita) > 0){
                      "nombre" => $val["nombre_foto"],
                      "ruta" => $val["ruta_foto"]
                  );
-
                  array_push($contenidoAdjunto, $tmp);
              }
         }
@@ -146,9 +171,63 @@ if($arrayVisita != null && sizeof($arrayVisita) > 0){
 $email = "correozionit@gmail.com";
 $pass = "ZhiLL89_34";
 $asunto = "Nueva visita registrada";
-$destinatario = array("seba.nobody@gmail.com"=>$nombre,"devil_zero99@hotmail.com"=>$nombre, "fmarin@zionit.cl" => "Felix Marin", 
-"felixraulmarinarribas@gmail.com"=>"Felix Marin", "rdelcanto@zionit.cl"=>"Rodrigo del Canto", "zionit.taba2@gmail.com"=>"rodrigo tableta", "jparada@zionit.cl"=>"Josue Parada", 
-"tabjpara@gmail.com" => "josue tableta" );
+
+$correosPrueba = array(
+    array(
+        "correo"=>"seba.nobody@gmail.com",
+        "nombre"=>"Sebastian Acuña"
+    ) , 
+    array(
+        "correo"=>"felixraulmarinarribas@gmail.com",
+        "nombre"=>"Felix Marin"
+    ),
+    array(
+        "correo"=>"zionit.taba2@gmail.com",
+        "nombre"=>"Rodrigo Tableta"
+    )
+    ,
+    array(
+        "correo"=>"tabjpara@gmail.com",
+        "nombre"=>"Josue Tableta"
+    ) 
+
+);
+
+
+    $emp;
+    $sql = "SELECT * FROM empresa ORDER BY id_empresa ASC LIMIT 1";
+    $consulta  = $conexion->prepare($sql);
+    $consulta->execute();
+    if($consulta->rowCount() > 0){
+     $emp = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+// TODO: buscar antes por la id de la empresa
+$conexionAmbiente = $conexiones->conexionAmbiente();
+
+$sql  = "SELECT * FROM sistema WHERE id_sistema = ? ";
+$consulta = $conexionAmbiente->prepare($sql);
+$consulta->bindValue("1", $emp[0]["id_ambiente"]);
+$consulta->execute();
+if($consulta->rowCount() > 0):
+    $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
+    foreach($r AS $res ){
+
+        switch($res["ambiente"]){
+            case "DESARROLLO":
+                array_push($destinatario , $correosPrueba);
+            break;
+
+            case "PRODUCCION":
+                array_push($destinatario , $correoProd);
+            break;
+        }
+    }
+
+else: 
+    array_push($destinatario , $correosPrueba);
+endif;
+
 $nombreDesde = "Zionit SPA";
 enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde,$contenidoAdjunto, $html);
 }
@@ -172,8 +251,8 @@ function enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde, $contenid
     $mail->setFrom($mail->Username,$nombreDesde);
 
 
-    foreach($destinatario as $correo => $nombre){
-        $mail->AddAddress($correo, $nombre); // recipients email
+    foreach($destinatario[0] as $correos){
+        $mail->AddAddress($correos["correo"], $correos["nombre"]); // recipients email
     }
 
 
@@ -189,17 +268,15 @@ function enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde, $contenid
 
     if(sizeof($contenidoAdjunto) > 0){
         foreach($contenidoAdjunto as $foto){
-
             $fichero = traerSoloContenido($foto["ruta"], ""); //Aqui guardas el archivo temporalmente.
             $mail->addStringAttachment($fichero, $foto["nombre"]);// 'base64', 'application/pdf'
         }
     }
 
     if(!$mail->send()) {
-        // echo 'Message could not be sent. <br>';
-        // echo 'Mailer Error: ' . $mail->ErrorInfo;
-    } else {
-        // echo 'Message has been sent';
+            mail("seba.nobody@gmail.com", "ELPARTO" ,$mail->ErrorInfo."////".error_reporting(E_ALL));
+    }else{
+        mail("seba.nobody@gmail.com", "ELPARTO" ,$mail->ErrorInfo."////".error_reporting(E_ALL));
     }
 
 }

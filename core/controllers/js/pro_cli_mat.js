@@ -709,7 +709,7 @@ function traerDatosRelacion(Page){
                         if(puas == 5) {
                             Contenido += "<td class='fix-edi' style='min-width:100px !important'>";
                             Contenido += "<button type='button' class='btn btn-info' data-tempo='"+item.id_tempo+"' data-prop='"+item.id_sub_propiedad+"' data-edi='"+item.id_prop_mat_cli+"' style='margin: 0 5px; padding:.1rem .3rem' title='Editar Propiedad'> <i class='fas fa-pencil-alt' data-tempo='"+item.id_tempo+"' data-prop='"+item.id_sub_propiedad+"' data-edi='"+item.id_prop_mat_cli+"' title='Editar Propiedad'></i> </button>";
-                            Contenido += "<button type='button' class='btn btn-danger' data-eli='"+item.id_prop_mat_cli+"' style='margin: 0; padding:.1rem .3rem' title='ELiminar Propiedad'> <i class='fas fa-times' data-eli='"+item.id_prop_mat_cli+"' title='ELiminar Propiedad'></i> </button>";
+                            Contenido += "<button type='button' style='display:none;' class='btn btn-danger' data-eli='"+item.id_prop_mat_cli+"' style='margin: 0; padding:.1rem .3rem' title='ELiminar Propiedad'> <i class='fas fa-times' data-eli='"+item.id_prop_mat_cli+"' title='ELiminar Propiedad'></i> </button>";
                             
                             Contenido += "</td>";
                         }

@@ -8,6 +8,15 @@
    define('USER','bd_fm_curimapu');
    define('PASSWORD','sis_301_bd_curimapu');
    define('CHARSET','utf8');
+
+
+  /*  BASE DE DATOS DE CONFIGURACION DE AMBIENTE  */
+
+  define('HOST_NAME_CONFIGURACION',$ArrayFunGlobConec["ServConecc"]);
+  define('DATABASE_NAME_CONFIGURACION','configuracion_ambiente');
+  define('USER_CONFIGURACION','mantencion');
+  define('PASSWORD_CONFIGURACION','mantzionit301');
+  define('CHARSET_CONFIGURACION','utf8');
    
 
    /* COMPARAR BD EN PESTANA TABLAS */
@@ -35,3 +44,7 @@
    define('USER_INTERCAMBIO_SUBIDA','bd_curimapu_zs');
    define('PASSWORD_INTERCAMBIO_SUBIDA', 'sis_301_bd_cur_zs');
    define('CHARSET_INTERCAMBIO_SUBIDA','utf8');
+
+
+  
+

@@ -183,7 +183,7 @@ require_once '../../db/conectarse_db.php';
                 /* Filtro */
                 /**********/
                 
-                $filtro = " WHERE id_export IS NOT NULL AND tipo_export = 0 ";
+                $filtro = " WHERE id_export IS NOT NULL  ";
                 // if($_SESSION["tipo_curimapu"] == 3){
                 //     $filtro = " WHERE F.estado_sincro = 1 AND F.id_est_fic = 2 AND F.id_tempo = ? AND (F.id_usuario = ? OR F.id_usuario IN (SELECT id_us_sup FROM supervisores WHERE id_sup_us = ?))";
 
@@ -210,7 +210,7 @@ require_once '../../db/conectarse_db.php';
                 if($this->kgs_recepcionado != ""){ $filtro .= " AND ST.kgs_recepcionado LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->kgs_recepcionado."%")); }
                 if($this->kgs_limpios != ""){ $filtro .= " AND ST.kgs_limpios LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->kgs_limpios."%")); }
                 if($this->kgs_exportados != ""){ $filtro .= " AND ST.kgs_exportados LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->kgs_exportados."%")); }
-                if($this->tara != ""){ $filtro .= " AND ST.tara LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->tara."%")); }
+                // if($this->tara != ""){ $filtro .= " AND ST.tara LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->tara."%")); }
                 // if($this->lote_campo != ""){ $filtro .= " AND ST.lote_campo LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->lote_campo."%")); }
                 // if($this->numero_guia != ""){ $filtro .= " AND ST.numero_guia LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->numero_guia."%")); }
                 // if($this->peso_bruto != ""){ $filtro .= " AND ST.peso_bruto LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->peso_bruto."%")); }
@@ -284,10 +284,6 @@ require_once '../../db/conectarse_db.php';
                             ST.kgs_limpios,  
                             ST.kgs_exportados,  
                             ST.lote_campo,  
-                            ST.numero_guia, 
-                            ST.tara, 
-                            ST.peso_bruto, 
-                            ST.peso_neto, 
                             A.razon_social AS nombre_agricultor,
                             C.razon_social AS nombre_cliente,
                             E.nombre AS nombre_especie,
@@ -359,7 +355,7 @@ require_once '../../db/conectarse_db.php';
                 /* Filtro */
                 /**********/
                 
-                $filtro = " WHERE id_export IS NOT NULL AND tipo_export = 0 ";
+                $filtro = " WHERE id_export IS NOT NULL  ";
                 // if($_SESSION["tipo_curimapu"] == 3){
                 //     $filtro = " WHERE F.estado_sincro = 1 AND F.id_est_fic = 2 AND F.id_tempo = ? AND (F.id_usuario = ? OR F.id_usuario IN (SELECT id_us_sup FROM supervisores WHERE id_sup_us = ?))";
 
@@ -385,7 +381,7 @@ require_once '../../db/conectarse_db.php';
                 if($this->kgs_recepcionado != ""){ $filtro .= " AND ST.kgs_recepcionado LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->kgs_recepcionado."%")); }
                 if($this->kgs_limpios != ""){ $filtro .= " AND ST.kgs_limpios LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->kgs_limpios."%")); }
                 if($this->kgs_exportados != ""){ $filtro .= " AND ST.kgs_exportados LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->kgs_exportados."%")); }
-                if($this->tara != ""){ $filtro .= " AND ST.tara LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->tara."%")); }
+                // if($this->tara != ""){ $filtro .= " AND ST.tara LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->tara."%")); }
                 // if($this->lote_campo != ""){ $filtro .= " AND ST.lote_campo LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->lote_campo."%")); }
                 // if($this->numero_guia != ""){ $filtro .= " AND ST.numero_guia LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->numero_guia."%")); }
                 // if($this->peso_bruto != ""){ $filtro .= " AND ST.peso_bruto LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->peso_bruto."%")); }
@@ -460,7 +456,7 @@ require_once '../../db/conectarse_db.php';
                 /* Filtro */
                 /**********/
                 
-                $filtro = " WHERE id_export IS NOT NULL AND tipo_export = 1 ";
+                $filtro = " WHERE id_export IS NOT NULL  ";
                 // if($_SESSION["tipo_curimapu"] == 3){
                 //     $filtro = " WHERE F.estado_sincro = 1 AND F.id_est_fic = 2 AND F.id_tempo = ? AND (F.id_usuario = ? OR F.id_usuario IN (SELECT id_us_sup FROM supervisores WHERE id_sup_us = ?))";
 
@@ -634,7 +630,7 @@ require_once '../../db/conectarse_db.php';
                 /* Filtro */
                 /**********/
                 
-                $filtro = " WHERE id_export IS NOT NULL AND tipo_export = 1 ";
+                $filtro = " WHERE id_export IS NOT NULL  ";
                 // if($_SESSION["tipo_curimapu"] == 3){
                 //     $filtro = " WHERE F.estado_sincro = 1 AND F.id_est_fic = 2 AND F.id_tempo = ? AND (F.id_usuario = ? OR F.id_usuario IN (SELECT id_us_sup FROM supervisores WHERE id_sup_us = ?))";
 

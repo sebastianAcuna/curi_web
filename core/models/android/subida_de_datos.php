@@ -292,6 +292,7 @@
                                                     if($consulta->rowCount() > 0){
                                                         $con++;
 
+                                                        $sumaInsertada+= $value["id_ficha"];
 
                                                         $idProspecto = $conexion->lastInsertId();
                                                         if($idProspecto > 0){
@@ -300,6 +301,7 @@
                                                     }
                                                 }else{
                                                     $con++;
+                                                    $sumaInsertada+= $value["id_ficha"];
                                                 }
                                             }catch(PDOException $error){
                                                 $rollback = true;
@@ -454,10 +456,12 @@
                                                                             $consulta->execute();
                                                                             if($consulta->rowCount() > 0){
                                                                                 $con++;
+                                                                                $sumaInsertada+= $value["id_fotos_fichas"];
                                                                             }
     
                                                                     }else{
                                                                         $con++;
+                                                                        $sumaInsertada+= $value["id_fotos_fichas"];
                                                                         // $rollback = true;
                                                                         // $mensajeError .= "[INSERT FOTOS FICHAS] fotos duplicadas";
                                                                     }
@@ -550,9 +554,12 @@
                                                     $consulta->execute();
                                                     if($consulta->rowCount() > 0){
                                                         $cont++;
+
+                                                        $sumaInsertada+=$value["id_visita"];
                                                     }
                                                 }else{
                                                    $cont++;
+                                                   $sumaInsertada+= $value["id_visita"];
                                                 }
                         
                                             }catch(PDOException $e){
@@ -619,6 +626,7 @@
                                                     $consulta->execute();
                                                     if($consulta->rowCount() > 0){
                                                         $con++;
+                                                        $sumaInsertada+=$value["id_det_vis_prop_detalle"];
                                                     }
                                                     
                                                 }else{
@@ -728,11 +736,12 @@
                                                                     $consulta->execute();
                                                                     if($consulta->rowCount() > 0){
                                                                         $con++;
-
+                                                                        $sumaInsertada+=$value["id_foto"];
 
                                                                     }
                                                                 }else{
                                                                     $con++;
+                                                                    $sumaInsertada+= $value["id_foto"];
                                                                     // $rollback = true;
                                                                     // $mensajeError .= "[INSERT FOTOS] fotos duplicadas";
                                                                 }
@@ -791,47 +800,47 @@
 
                                     
 
-                                    $sql = "SELECT * FROM prospecto WHERE id_cab_subida = ?;";    
-                                    $consulta = $conexion->prepare($sql);
-                                    $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
-                                    $consulta->execute();
-                                    if($consulta->rowCount() > 0){
-                                        $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
-                                        foreach($r as $val){
-                                            $sumaInsertada+=$val["id_local"];
-                                        }
-                                    }
+                                    // $sql = "SELECT * FROM prospecto WHERE id_cab_subida = ?;";    
+                                    // $consulta = $conexion->prepare($sql);
+                                    // $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
+                                    // $consulta->execute();
+                                    // if($consulta->rowCount() > 0){
+                                    //     $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
+                                    //     foreach($r as $val){
+                                    //         $sumaInsertada+=$val["id_local"];
+                                    //     }
+                                    // }
 
-                                    $sql = "SELECT * FROM visita WHERE id_cabecera = ?;";    
-                                    $consulta = $conexion->prepare($sql);
-                                    $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
-                                    $consulta->execute();
-                                    if($consulta->rowCount() > 0){
-                                        $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
-                                        foreach($r as $val){
-                                            $sumaInsertada+=$val["id_visita_local"];
-                                        }
-                                    }
-                                    $sql = "SELECT * FROM detalle_visita_prop WHERE id_cabecera = ?;";    
-                                    $consulta = $conexion->prepare($sql);
-                                    $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
-                                    $consulta->execute();
-                                    if($consulta->rowCount() > 0){
-                                        $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
-                                        foreach($r as $val){
-                                            $sumaInsertada+=$val["id_local"];
-                                        }
-                                    }
-                                    $sql = "SELECT * FROM fotos WHERE id_cabecera = ? ;";    
-                                    $consulta = $conexion->prepare($sql);
-                                    $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
-                                    $consulta->execute();
-                                    if($consulta->rowCount() > 0){
-                                        $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
-                                        foreach($r as $val){
-                                            $sumaInsertada+=$val["id_local"];
-                                        }
-                                    }
+                                    // $sql = "SELECT * FROM visita WHERE id_cabecera = ?;";    
+                                    // $consulta = $conexion->prepare($sql);
+                                    // $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
+                                    // $consulta->execute();
+                                    // if($consulta->rowCount() > 0){
+                                    //     $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
+                                    //     foreach($r as $val){
+                                    //         $sumaInsertada+=$val["id_visita_local"];
+                                    //     }
+                                    // }
+                                    // $sql = "SELECT * FROM detalle_visita_prop WHERE id_cabecera = ?;";    
+                                    // $consulta = $conexion->prepare($sql);
+                                    // $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
+                                    // $consulta->execute();
+                                    // if($consulta->rowCount() > 0){
+                                    //     $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
+                                    //     foreach($r as $val){
+                                    //         $sumaInsertada+=$val["id_local"];
+                                    //     }
+                                    // }
+                                    // $sql = "SELECT * FROM fotos WHERE id_cabecera = ? ;";    
+                                    // $consulta = $conexion->prepare($sql);
+                                    // $consulta->bindValue("1", $idCabecera, PDO::PARAM_INT);
+                                    // $consulta->execute();
+                                    // if($consulta->rowCount() > 0){
+                                    //     $r = $consulta->fetchAll(PDO::FETCH_ASSOC);
+                                    //     foreach($r as $val){
+                                    //         $sumaInsertada+=$val["id_local"];
+                                    //     }
+                                    // }
 
                                     if($sumaInsertada != $cantidadSuma){
                                         $codigoError = 2;

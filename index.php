@@ -197,7 +197,7 @@
                             Stock semillas
                         </a>
                         <a href="#Export" class="list-group-item list-group-item-action bg-light" id="export">
-                            <i class="fa fa-list-ul"></i>
+                            <i class="fas fa-file-export"></i>
                             Export
                         </a>
                     <?php 
@@ -205,7 +205,7 @@
                         if($_SESSION["IDuser_curimapu"] == 1 || $_SESSION["IDuser_curimapu"] == 2): 
                     ?>
                         <a href="#Tablas" class="list-group-item list-group-item-action bg-light" id="tablas">
-                            <i class="fa fa-list-ul"></i>
+                        <i class="fas fa-table"></i>
                             Tablas
                         </a>
                     <?php
@@ -213,7 +213,7 @@
                     ?>
                      <?php if($_SESSION["tipo_curimapu"] == 4 || $_SESSION["tipo_curimapu"] == 5): ?>
                     <a href="#Intercambio" class="list-group-item list-group-item-action bg-light" id="intercambio">
-                        <i class="fa fa-list-ul"></i>
+                        <i class="fas fa-exchange-alt"></i>
                         Intercambio
                     </a>
                     <?php

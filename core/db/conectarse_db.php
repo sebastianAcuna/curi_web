@@ -10,6 +10,14 @@
         private $password = PASSWORD;
         private $charset = CHARSET;
 
+        /* DATOS AMBIENTE */
+        private $hostnameAmbiente = HOST_NAME_CONFIGURACION;
+        private $databaseAmbiente = DATABASE_NAME_CONFIGURACION;
+        private $userAmbiente = USER_CONFIGURACION;
+        private $passwordAmbiente = PASSWORD_CONFIGURACION;
+        private $charsetAmbiente = CHARSET_CONFIGURACION;
+
+
         /* comparar bases de datos */
         private $hostnameDos = HOST_NAME_DOS;
         private $databaseDos = DATABASE_NAME_DOS;
@@ -56,6 +64,31 @@
 
         }
 
+        /*  conexion a base de datos en  configuracion */
+        public function conexionAmbiente(){
+
+            try{
+
+                $opciones = array(
+                            PDO::ATTR_EMULATE_PREPARES=>false,
+                            PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION
+                        );
+
+                $this->conexion=new PDO('mysql:host='.$this->hostnameAmbiente.';dbname='.$this->databaseAmbiente, $this->userAmbiente, $this->passwordAmbiente, $opciones);
+
+                $this->conexion->exec('SET NAMES '.$this->charsetAmbiente.'');
+
+            } catch (PDOException $error){
+
+                echo "¡ERROR: !".$error->getMessage();
+                die();
+
+            }
+
+            return $this->conexion;
+
+        }
+
         /*  conexion para comparar bases de datos, entre desarrollo y produccion */
         public function conexion_produccion(){
 
@@ -80,6 +113,7 @@
             return $this->conexionDos;
 
         }
+
 
         /*  conexion para descargar datos de base de datos intercambio */
         public function conexion_descarga(){

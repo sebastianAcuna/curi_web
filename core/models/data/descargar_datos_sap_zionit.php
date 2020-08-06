@@ -2246,9 +2246,6 @@ if($idCabecera > 0){
 
 
 
-
-   
-
     /* AGRICULTOR */
     if(sizeof($arrayRespuestaErronea) <= 0){
        
@@ -3749,12 +3746,7 @@ if($idCabecera > 0){
                                     kgs_recepcionados = :kgs_recepcionados,  
                                     kgs_limpios = :kgs_limpios,  
                                     kgs_exportados = :kgs_exportados,  
-                                    lote_campo = :lote_campo,  
-                                    numero_guia = :numero_guia, 
-                                    peso_bruto = :peso_bruto, 
-                                    tara = :tara, 
-                                    peso_neto = :peso_neto,
-                                    tipo_export = :tipo_export
+                                    lote_campo = :lote_campo
                                     WHERE id_stock_semilla = :id_stock_semilla ;";
                                     $movimientoWeb = $conexionWeb->prepare($sqlWeb);
                                     $movimientoWeb->bindValue(":id_export_sap", $val["id_export"], PDO::PARAM_STR);
@@ -3771,11 +3763,6 @@ if($idCabecera > 0){
                                     $movimientoWeb->bindValue(":kgs_limpios", $val["kgs_limpios"], PDO::PARAM_STR);
                                     $movimientoWeb->bindValue(":kgs_exportados", $val["kgs_exportados"], PDO::PARAM_STR);
                                     $movimientoWeb->bindValue(":lote_campo", $val["lote_campo"], PDO::PARAM_STR);
-                                    $movimientoWeb->bindValue(":numero_guia", $val["numero_guia"], PDO::PARAM_STR);
-                                    $movimientoWeb->bindValue(":peso_bruto", $val["peso_bruto"], PDO::PARAM_STR);
-                                    $movimientoWeb->bindValue(":tara", $val["tara"], PDO::PARAM_STR);
-                                    $movimientoWeb->bindValue(":peso_neto", $val["peso_neto"], PDO::PARAM_STR);
-                                    $movimientoWeb->bindValue(":tipo_export", $val["tipo_export"], PDO::PARAM_STR);
                                     $movimientoWeb->bindValue(":id_export", $valWeb["id_export"], PDO::PARAM_STR);
                                     $movimientoWeb->execute();
                                     /*  contar filas updateadas */
@@ -3804,12 +3791,7 @@ if($idCabecera > 0){
                                     kgs_recepcionados,  
                                     kgs_limpios,  
                                     kgs_exportados,  
-                                    lote_campo,  
-                                    numero_guia, 
-                                    peso_bruto, 
-                                    tara, 
-                                    peso_neto,
-                                    tipo_export ) 
+                                    lote_campo ) 
                                 VALUES(
                                     :id_export_sap,
                                     :id_tempo,
@@ -3824,12 +3806,7 @@ if($idCabecera > 0){
                                     :kgs_recepcionados,
                                     :kgs_limpios,
                                     :kgs_exportados,
-                                    :lote_campo,
-                                    :numero_guia,
-                                    :peso_bruto,
-                                    :tara,
-                                    :peso_neto,
-                                    :tipo_export ) ;";
+                                    :lote_campo) ;";
                                 $movimientoWeb = $conexionWeb->prepare($sqlWeb);
                                 $movimientoWeb->bindValue(":id_export_sap", $val["id_export"], PDO::PARAM_STR);
                                 $movimientoWeb->bindValue(":id_tempo", $arrayTemporada[$val["id_tempo"]], PDO::PARAM_STR);
@@ -3845,11 +3822,6 @@ if($idCabecera > 0){
                                 $movimientoWeb->bindValue(":kgs_limpios", $val["kgs_limpios"], PDO::PARAM_STR);
                                 $movimientoWeb->bindValue(":kgs_exportados", $val["kgs_exportados"], PDO::PARAM_STR);
                                 $movimientoWeb->bindValue(":lote_campo", $val["lote_campo"], PDO::PARAM_STR);
-                                $movimientoWeb->bindValue(":numero_guia", $val["numero_guia"], PDO::PARAM_STR);
-                                $movimientoWeb->bindValue(":peso_bruto", $val["peso_bruto"], PDO::PARAM_STR);
-                                $movimientoWeb->bindValue(":tara", $val["tara"], PDO::PARAM_STR);
-                                $movimientoWeb->bindValue(":peso_neto", $val["peso_neto"], PDO::PARAM_STR);
-                                $movimientoWeb->bindValue(":tipo_export", $val["tipo_export"], PDO::PARAM_STR);
                                 $movimientoWeb->execute();
                                 /*  contar filas insertar */
                                 $datosInsertados += $movimientoWeb->rowCount();
@@ -4074,7 +4046,6 @@ if(sizeof($arrayRespuestaErronea) <= 0){
                                     foreach($maestroPROCLIMAT AS $maestro){
                                         if($arrayProCliMat[$maestro] != $maestro){
     
-    
                                             $selectFirst = "SELECT * FROM prop_cli_mat WHERE id_esp = ? AND identificador = ? LIMIT 1 ; ";
                                             $movimientoFirst = $conexionWeb->prepare($selectFirst);
                                             $movimientoFirst->bindValue("1", $idEspecieBusca, PDO::PARAM_STR);
@@ -4086,8 +4057,6 @@ if(sizeof($arrayRespuestaErronea) <= 0){
     
                                                 foreach($resARecorres AS $value){
     
-                                    
-
                                                     $insert = "INSERT INTO prop_cli_mat(id_esp, id_prop, id_etapa, id_tempo, id_sub_propiedad, aplica, orden, foraneo, tabla, campo, tipo_campo, reporte_cliente, especial, identificador) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
                                                     $insertProp = $conexionWeb->prepare($insert);
                                                     $insertProp->bindValue("1", $especiesArray, PDO::PARAM_STR);
@@ -4096,6 +4065,7 @@ if(sizeof($arrayRespuestaErronea) <= 0){
                                                     $insertProp->bindValue("4", $temporadasArray, PDO::PARAM_STR);
                                                     $insertProp->bindValue("5", $value["id_sub_propiedad"], PDO::PARAM_STR);
                                                     $insertProp->bindValue("6", $value["aplica"], PDO::PARAM_STR);
+                                                    // $insertProp->bindValue("6", "NO", PDO::PARAM_STR);
                                                     $insertProp->bindValue("7", $value["orden"], PDO::PARAM_STR);
                                                     $insertProp->bindValue("8", $value["foraneo"], PDO::PARAM_STR);
                                                     $insertProp->bindValue("9", $value["tabla"], PDO::PARAM_STR);

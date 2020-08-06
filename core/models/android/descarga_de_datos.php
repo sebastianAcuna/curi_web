@@ -132,13 +132,13 @@
 
 
     try{
-        $where = "";
+        $where = "WHERE historial_predio.tipo = 'F' ";
         if($idTipoUsuario != 5){
 
           
 
 
-            $where = "  WHERE historial_predio.tipo = 'F' AND ( (supervisores.id_sup_us = ? || supervisores.id_us_sup = ? || F.id_usuario = ?)   OR   (F.id_ficha IN (SELECT id_ficha FROM anexo_contrato WHERE id_ac IN  (SELECT id_ac FROM usuario_anexo WHERE id_usuario = ?) ) ))";
+            $where .= " AND ( (supervisores.id_sup_us = ? || supervisores.id_us_sup = ? || F.id_usuario = ?)   OR   (F.id_ficha IN (SELECT id_ficha FROM anexo_contrato WHERE id_ac IN  (SELECT id_ac FROM usuario_anexo WHERE id_usuario = ?) ) ))";
         }
 
         $sql = "SELECT * FROM supervisores 
@@ -439,12 +439,9 @@
 				INNER JOIN materiales ON (materiales.id_materiales = anexo_contrato.id_materiales)
 				INNER JOIN lote ON (lote.id_lote = anexo_contrato.id_lote)
 				LEFT JOIN contrato_agricultor ON (contrato_agricultor.id_cont = anexo_contrato.id_cont)
-                LEFT JOIN contrato_anexo_temporada CAT ON (contrato_agricultor.id_cont = CAT.id_cont)
+                LEFT JOIN contrato_anexo_temporada CAT ON (anexo_contrato.id_ac = CAT.id_ac)
 				$where
 				GROUP BY anexo_contrato.id_ac ";    
-	
-	
-		 // echo $sql;
 	
 			$consulta = $conexion->prepare($sql);
 			if($idTipoUsuario != 5){

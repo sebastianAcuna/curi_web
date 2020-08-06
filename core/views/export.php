@@ -22,9 +22,9 @@
             <li class="nav-item">
                 <a class="nav-link active" id="planta-tab" data-toggle="tab" href="#planta" role="tab" aria-controls="planta" aria-selected="true"> Planta </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" id="recepcion-tab" data-toggle="tab" href="#recepcion" role="tab" aria-controls="recepcion" aria-selected="false"> Recepcion </a>
-            </li>
+            </li> -->
         </ul>
     </div> 
 </div>
@@ -98,11 +98,9 @@
         <!-- Termina contenedor de la tabla PLANTA -->
     </div>
 
-    <div class="tab-pane fade" id="recepcion" role="tabpanel" aria-labelledby="recepcion-tab">
-        <!-- Contenedor de la tabla RECEPCION -->
+    <!-- <div class="tab-pane fade" id="recepcion"  role="tabpanel" aria-labelledby="recepcion-tab">
         <div class="container-fluid" >
             <div class="table-responsive">
-                <!-- Tabla -->
                 <table class="table table-striped table-hover table-bordered" id="tablaRecepcion">
                     <thead>
                         <tr>
@@ -110,24 +108,7 @@
                             <th scope="col">
                                     <select id="FRec1" name="FRec" style="width:100%;">
                                         <option value="">Seleccione</option>
-                                            <?php
-
-                                                $conexion = new Conectar();
-                                                $conexion = $conexion->conexion();
-
-                                                $sql = "SELECT * FROM especie ORDER BY nombre ASC";
-                                                $res = $conexion->prepare($sql);
-                                                $res->execute();
-                                                if($res->rowCount() > 0) :
-                                                    $r = $res->fetchAll(PDO::FETCH_ASSOC);
-                                                    foreach($r as $val) : ?>
-                                                        <option value="<?php echo $val["id_esp"];?>"><?php echo $val["nombre"];?></option>
-                                                    <?php endforeach;
-                                                else : ?>    
-                                                    <option value="">No hay especies </option>
-                                                <?php endif;
-
-                                            ?>
+                                           
                                     </select>
                             </th>
                             <th scope="col"> <input type="text" class="form-control form-control-sm" id="FRec3" name="FRec" placeholder="Variedad" > </th>
@@ -160,8 +141,7 @@
                 </table>
             </div>
         </div>
-        <!-- Termina contenedor de la tabla RECEPCION -->
-    </div>
+    </div> -->
     
     <div id="paginacion">
     </div>

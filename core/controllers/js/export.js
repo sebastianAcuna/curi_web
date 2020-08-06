@@ -9,17 +9,17 @@
 
     function limpiarFiltros(){
         var FPla = document.getElementsByName("FPla");
-        var FRec = document.getElementsByName("FRec");
+        // var FRec = document.getElementsByName("FRec");
 
         FPla.forEach( function(element) { 
             element.value = "";
 
         });
 
-        FRec.forEach( function(element) { 
-            element.value = "";
+        // FRec.forEach( function(element) { 
+        //     element.value = "";
 
-        });
+        // });
 
         var up = document.getElementsByClassName("fa-arrow-up");
 
@@ -173,131 +173,131 @@
 
 
 
-    function traerDatosRecepcion(Page){
+    // function traerDatosRecepcion(Page){
 
-        let filtros = document.getElementsByName("FRec");
-
-
-        let data = "";
-
-        //Orden de datos
-        var Orden = obtenerOrden();
-        data += "&Orden="+Orden;
+    //     let filtros = document.getElementsByName("FRec");
 
 
-        // Ve que pagina es y trae los datos correspondientes a tal
-        let Des = obtenerPagina(Page);
-        data += "&D="+Des;
+    //     let data = "";
 
-        // Temporada de operacion
-        var Temporada = document.getElementById("selectTemporada").value;
-        data += "&Temporada="+Temporada;
+    //     //Orden de datos
+    //     var Orden = obtenerOrden();
+    //     data += "&Orden="+Orden;
 
 
-        for (let i = 0; i < filtros.length; i++){
-            let value = filtros[i].value.trim();
+    //     // Ve que pagina es y trae los datos correspondientes a tal
+    //     let Des = obtenerPagina(Page);
+    //     data += "&D="+Des;
+
+    //     // Temporada de operacion
+    //     var Temporada = document.getElementById("selectTemporada").value;
+    //     data += "&Temporada="+Temporada;
+
+
+    //     for (let i = 0; i < filtros.length; i++){
+    //         let value = filtros[i].value.trim();
 
             
-            data += "&campo"+[i]+"="+value;
-        }
+    //         data += "&campo"+[i]+"="+value;
+    //     }
 
-        return new Promise(function(resolve, reject) {
+    //     return new Promise(function(resolve, reject) {
 
-            $.ajax({
-                data:'action=traerDatosRecepcion'+data,
-                url: urlDes,
-                type:'POST',
-                dataType:'JSON'
-            }).done(function(resp){
-                var Contenido = "";
+    //         $.ajax({
+    //             data:'action=traerDatosRecepcion'+data,
+    //             url: urlDes,
+    //             type:'POST',
+    //             dataType:'JSON'
+    //         }).done(function(resp){
+    //             var Contenido = "";
 
-                if(resp != null &&  resp.length != 0){
+    //             if(resp != null &&  resp.length != 0){
                     
-                    $.each(resp,function(i,item){   
-                        Contenido += "<tr>";
-                            Contenido += "<td>"+(parseInt(Des)+i+1)+"</td>";
-                            Contenido += "<td "+minText(item.nombre_especie)+"</td>";
-                            Contenido += "<td "+minText(item.nombre_material)+"</td>";
-                            Contenido += "<td "+minText(item.num_anexo)+"</td>";
-                            Contenido += "<td "+minText(item.nombre_agricultor)+"</td>";
-                            Contenido += "<td "+minText(item.rut)+"</td>";
-                            Contenido += "<td "+minText(item.lote_campo)+"</td>";
-                            Contenido += "<td "+minText(item.numero_guia)+"</td>";
-                            Contenido += "<td "+minText(separador(item.peso_bruto))+"</td>";
-                            Contenido += "<td "+minText(separador(item.tara))+"</td>";
-                            Contenido += "<td "+minText(separador(item.peso_neto))+"</td>";
-                        Contenido += "</tr>";
+    //                 $.each(resp,function(i,item){   
+    //                     Contenido += "<tr>";
+    //                         Contenido += "<td>"+(parseInt(Des)+i+1)+"</td>";
+    //                         Contenido += "<td "+minText(item.nombre_especie)+"</td>";
+    //                         Contenido += "<td "+minText(item.nombre_material)+"</td>";
+    //                         Contenido += "<td "+minText(item.num_anexo)+"</td>";
+    //                         Contenido += "<td "+minText(item.nombre_agricultor)+"</td>";
+    //                         Contenido += "<td "+minText(item.rut)+"</td>";
+    //                         Contenido += "<td "+minText(item.lote_campo)+"</td>";
+    //                         Contenido += "<td "+minText(item.numero_guia)+"</td>";
+    //                         Contenido += "<td "+minText(separador(item.peso_bruto))+"</td>";
+    //                         Contenido += "<td "+minText(separador(item.tara))+"</td>";
+    //                         Contenido += "<td "+minText(separador(item.peso_neto))+"</td>";
+    //                     Contenido += "</tr>";
 
-                    });
+    //                 });
 
-                }else{
-                    Contenido = "<tr> <td colspan='12' style='text-align:center'> No existen registro en recepcion </td> </tr>";
+    //             }else{
+    //                 Contenido = "<tr> <td colspan='12' style='text-align:center'> No existen registro en recepcion </td> </tr>";
 
-                }
+    //             }
 
-                document.getElementById("datosRecepcion").innerHTML = Contenido;
+    //             document.getElementById("datosRecepcion").innerHTML = Contenido;
 
-                resolve();
+    //             resolve();
 
-            }).fail(function( jqXHR, textStatus, responseText) {
-                Contenido = "<tr> <td colspan='12' style='text-align:center'> Ups.. Intentamos conectarnos con el sistema, pero no hemos podido. </td> </tr>";
+    //         }).fail(function( jqXHR, textStatus, responseText) {
+    //             Contenido = "<tr> <td colspan='12' style='text-align:center'> Ups.. Intentamos conectarnos con el sistema, pero no hemos podido. </td> </tr>";
                 
-                document.getElementById("datosRecepcion").innerHTML = Contenido;
+    //             document.getElementById("datosRecepcion").innerHTML = Contenido;
 
-                reject(textStatus+" => "+responseText);
+    //             reject(textStatus+" => "+responseText);
 
-            });
+    //         });
 
-        });
+    //     });
 
-    }
+    // }
   
-    function totalDatosRecepcion(){
+    // function totalDatosRecepcion(){
     
-        let filtros = document.getElementsByName("FRec");
+    //     let filtros = document.getElementsByName("FRec");
 
 
-        let data = "";
+    //     let data = "";
 
-        // Temporada de operacion
-        var Temporada = document.getElementById("selectTemporada").value;
-        data += "&Temporada="+Temporada;
+    //     // Temporada de operacion
+    //     var Temporada = document.getElementById("selectTemporada").value;
+    //     data += "&Temporada="+Temporada;
 
 
-        for (let i = 0; i < filtros.length; i++){
-            let value = filtros[i].value.trim();
+    //     for (let i = 0; i < filtros.length; i++){
+    //         let value = filtros[i].value.trim();
 
             
-            data += "&campo"+[i]+"="+value;
-        }
+    //         data += "&campo"+[i]+"="+value;
+    //     }
         
-        return new Promise(function(resolve, reject) {
+    //     return new Promise(function(resolve, reject) {
 
-            $.ajax({
-                data:'action=totalDatosRecepcion'+data,
-                url: urlDes,
-                type:'POST',
-                dataType:'JSON',
-                async: false
-            }).done(function(resp){
-                if(resp.length != 0){
-                    sessionStorage.TotalAct = resp.Total;
+    //         $.ajax({
+    //             data:'action=totalDatosRecepcion'+data,
+    //             url: urlDes,
+    //             type:'POST',
+    //             dataType:'JSON',
+    //             async: false
+    //         }).done(function(resp){
+    //             if(resp.length != 0){
+    //                 sessionStorage.TotalAct = resp.Total;
         
-                }else{
-                    sessionStorage.TotalAct = 0;
+    //             }else{
+    //                 sessionStorage.TotalAct = 0;
         
-                }
+    //             }
 
-                resolve();
+    //             resolve();
 
-            }).fail(function( jqXHR, textStatus, responseText) {
-                reject(textStatus+" => "+responseText);
+    //         }).fail(function( jqXHR, textStatus, responseText) {
+    //             reject(textStatus+" => "+responseText);
 
-            });
+    //         });
 
-        });
+    //     });
 
-    }
+    // }
 
 /*              fin de traer datos              */
 /*==================================================================================================================================*/
@@ -317,19 +317,19 @@
 
     }
 
-    function informacionRecepcion() { 
-        const promiseDatos = traerDatosRecepcion(1);
+    // function informacionRecepcion() { 
+    //     const promiseDatos = traerDatosRecepcion(1);
 
-        promiseDatos.then(
-            result => totalDatosRecepcion().then( result => paginador(), error => console.log(error)),
-            error => console.log(error)
+    //     promiseDatos.then(
+    //         result => totalDatosRecepcion().then( result => paginador(), error => console.log(error)),
+    //         error => console.log(error)
 
-        ).finally(
-            /* finaly => console.log() */
+    //     ).finally(
+    //         /* finaly => console.log() */
             
-        );
+    //     );
 
-    }
+    // }
 
     informacionPlanta();
 
@@ -338,9 +338,9 @@
 /*              Ejecutar paginacion              */
 
 
-$("#FRec1").select2();
+// $("#FRec1").select2();
 
-$('#FRec1').on("select2:select", (e) =>  informacionRecepcion(1));
+// $('#FRec1').on("select2:select", (e) =>  informacionRecepcion(1));
 
 $("#FPla1").select2();
 
@@ -389,10 +389,10 @@ $('#FPla1').on("select2:select", (e) =>  informacionPlanta(1));
 
                 break;
 
-                case "recepcion-tab":
-                    informacionRecepcion();
+                // case "recepcion-tab":
+                //     informacionRecepcion();
 
-                break;
+                // break;
 
             }
 
@@ -421,9 +421,9 @@ $('#FPla1').on("select2:select", (e) =>  informacionPlanta(1));
                     traerDatosPlanta(1);
                 break;
 
-                case "recepcion-tab":
-                    traerDatosRecepcion(1);
-                break;
+                // case "recepcion-tab":
+                //     traerDatosRecepcion(1);
+                // break;
 
             }
 
@@ -438,12 +438,12 @@ $('#FPla1').on("select2:select", (e) =>  informacionPlanta(1));
 
     });
 
-    var tablaRecepcion = document.getElementById("tablaRecepcion");
+    // var tablaRecepcion = document.getElementById("tablaRecepcion");
     
-    tablaRecepcion.addEventListener("click", function(e){
-        ejecutarOrden(e);
+    // tablaRecepcion.addEventListener("click", function(e){
+    //     ejecutarOrden(e);
 
-    });
+    // });
     
 /*              Fin de ejecutar              */
 /*==================================================================================================================================*/
@@ -458,14 +458,14 @@ $('#FPla1').on("select2:select", (e) =>  informacionPlanta(1));
         
     });
 
-    tablaRecepcion.addEventListener('change', function(e) {
-        var name = e.target.name;
-        if(name == "FRec"){
-            informacionRecepcion();
+    // tablaRecepcion.addEventListener('change', function(e) {
+    //     var name = e.target.name;
+    //     if(name == "FRec"){
+    //         informacionRecepcion();
 
-        }
+    //     }
         
-    });
+    // });
 
 /*              Fin de ejecutar filtros              */
 /*==================================================================================================================================*/
@@ -490,10 +490,10 @@ $('#FPla1').on("select2:select", (e) =>  informacionPlanta(1));
                 filtros = document.getElementsByName("FPla");
             break;
 
-            case "recepcion-tab":
-                activa = 2;
-                filtros = document.getElementsByName("FRec");
-            break;
+            // case "recepcion-tab":
+            //     activa = 2;
+            //     filtros = document.getElementsByName("FRec");
+            // break;
 
         }
 
