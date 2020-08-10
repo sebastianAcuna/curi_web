@@ -5,7 +5,7 @@
     require_once '../../db/conectarse_db.php';
     include_once('../../../../a_funcion_sistemas/sql_resp_ftp_all_pdo.php');
 
-    require_once '../../../docs/send_mail.php';
+    include_once('../../../docs/send_mail.php');
 
     $conexion = new Conectar();
     $conexion = $conexion->conexion();

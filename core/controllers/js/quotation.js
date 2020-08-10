@@ -1,7 +1,7 @@
 /*==================================================================================================================================*/
 /*              Variables globales              */
 
-    var urlDes = "core/controllers/php/quotation.php";
+var urlDes = "core/controllers/php/quotation.php";
 
 /*              Fin de variables globales              */
 /*==================================================================================================================================*/
@@ -47,9 +47,10 @@
                 if(resp.status == "success" && resp.data != null){
 
                     $.each(resp.data,function(i,item){
+                        let hayKgs = (item.hayKGS > 0)?" style='color:red'; title='Existe una superficie contratada basada en la unidad de medida de KGS, por lo tanto no se mostrará' ":"";
                         Contenido += "<tr>";
                             Contenido += "<td>"+(parseInt(Des)+i+1)+"</td>";
-                            Contenido += "<td "+minText(item.razon_social)+"</td>";
+                            Contenido += "<td "+hayKgs+minText(item.razon_social)+"</td>";
                             /* Contenido += "<td "+minText(item.quotations)+"</td>";
                             Contenido += "<td "+minText(item.detalles)+"</td>";
                             Contenido += "<td "+minText(item.especies)+"</td>";
@@ -69,6 +70,7 @@
                             Contenido += "<td "+separador(minText(((item.usdp)?item.usdp:0)))+"</td>";
                             Contenido += "<td "+separador(minText(((item.kgex)?item.kgex:0)))+"</td>";
                             Contenido += "<td "+separador(minText(((item.usds)?item.usds:0)))+"</td>";
+                            Contenido += "<td "+separador(minText((item.cantidad)))+"</td>";
                             Contenido += "<td class='fix-edi' align='center' style='min-width:100px'>";
                             Contenido += "<button type='button' class='btn btn-success' data-ver='"+item.id_cli+"' data-name='"+item.razon_social+"' style='margin: 0; padding:.1rem .3rem'> <i class='fas fa-search' data-ver='"+item.id_cli+"' data-name='"+item.razon_social+"' ></i> </button>";
                             Contenido += "<button type='button' class='btn btn-danger' data-pdf='"+item.id_cli+"' data-name='"+item.razon_social+"' style='margin: 0 5px; padding:.1rem .3rem'> <i class='fas fa-file-pdf' data-pdf='"+item.id_cli+"' data-name='"+item.razon_social+"' ></i> </button>";
@@ -78,10 +80,10 @@
                     });
 
                 }else if(resp.status == "success" && resp.data == null){
-                    Contenido = "<tr> <td colspan='16' style='text-align:center'> No existen registros </td> </tr>";
+                    Contenido = "<tr> <td colspan='17' style='text-align:center'> No existen registros </td> </tr>";
 
                 }else if(resp.status == "error"){
-                    Contenido = "<tr> <td colspan='16' style='text-align:center'> Ups(1).. Intentamos conectarnos con el sistema, pero no hemos podido. </td> </tr>";
+                    Contenido = "<tr> <td colspan='17' style='text-align:center'> Ups(1).. Intentamos conectarnos con el sistema, pero no hemos podido. </td> </tr>";
 
                 }
 
@@ -90,7 +92,7 @@
                 resolve();
 
             }).fail(function( jqXHR, textStatus, responseText) {
-                Contenido = "<tr> <td colspan='16' style='text-align:center'> Ups(2).. Intentamos conectarnos con el sistema, pero no hemos podido. </td> </tr>";
+                Contenido = "<tr> <td colspan='17' style='text-align:center'> Ups(2).. Intentamos conectarnos con el sistema, pero no hemos podido. </td> </tr>";
                 
                 document.getElementById("datos").innerHTML = Contenido;
 
@@ -192,6 +194,7 @@
                         Contenido += "<td "+separador(minText(((item.usdp)?item.usdp:0)))+"</td>";
                         Contenido += "<td "+separador(minText(((item.kgex)?item.kgex:0)))+"</td>";
                         Contenido += "<td "+separador(minText(((item.usds)?item.usds:0)))+"</td>";
+                        Contenido += "<td "+separador(minText((item.cantidad)))+"</td>";
                         Contenido += "<td class='fix-edi' align='center' style='min-width:80px'>";
                         Contenido += "<button type='button' class='btn btn-danger' data-pdfanx='"+item.id_quotation+"' data-num='"+item.numero_contrato+"' data-nom='"+item.nombre+"' data-cli='"+cliente+"' style='margin: 0 5px 0 0; padding:.1rem .3rem'> <i class='fas fa-file-pdf' data-pdfanx='"+item.id_quotation+"' data-num='"+item.numero_contrato+"' data-nom='"+item.nombre+"' data-cli='"+cliente+"' ></i> </button>";
                         Contenido += "<button type='button' class='btn btn-success' data-exlanx='"+item.id_quotation+"' data-num='"+item.numero_contrato+"' style='margin: 0; padding:.1rem .3rem'> <i class='far fa-file-excel' data-exlanx='"+item.id_quotation+"' data-num='"+item.numero_contrato+"' ></i> </button> </td>";
@@ -225,11 +228,11 @@
 
     function traerInfoAnexosPdf(info,num,nom,cli){
         // Data del ajax
-        var data = "";
+        let data = "";
         data = "action=traerInfoAnexosPdf";
 
         // Temporada de operacion
-        var Temporada = document.getElementById("selectTemporada").value;
+        let Temporada = document.getElementById("selectTemporada").value;
         data += "&Temporada="+Temporada;
 
         // Info
@@ -242,14 +245,14 @@
             dataType:'JSON',
             async: false
         }).done(function(resp){
-            var ContenidoCheck = "";
-            var ContenidoObs = "";
+            let ContenidoCheck = "";
+            let ContenidoObs = "";
 
             if(resp[1].status == "success" && resp[1].data != null){
 
-                var titulos = new Array();
-                var especies = new Array();
-                var e = 0;
+                let titulos = new Array();
+                let especies = new Array();
+                let e = 0;
 
                 ContenidoCheck +=   "<div class='col-lg-12 col-sm-12'>";
                 ContenidoCheck +=       "<h1 class='title'> Datos del PDF </h1><hr>";
@@ -267,19 +270,35 @@
 
                 $.each(resp[1].data,function(i,item){
                     if(item.especial == "NO" || (item.especial == "SI" && cli.toLowerCase().includes("syngenta"))){
-                        var nombre = (item.sub.trim() == item.pri.trim()) ? item.sub.trim() : item.pri.trim()+" - "+item.sub.trim();
-                        var check = (item.etapa <= resp[2].data.etapa)? "checked":"";
+                        let nombre = (item.sub.trim() == item.pri.trim()) ? item.sub.trim() : item.pri.trim()+" - "+item.sub.trim();
+                        let check = (item.etapa <= resp[2].data.etapa)? "checked":"";
 
                         e = (titulos.indexOf(item.nombreE) == -1)? 0 : e+1;
-                        ContenidoCheck +=  (especies.indexOf(item.especie) == -1) ? "</div><div class='col-lg-12 col-sm-12' align='center'>" : "";
-                        ContenidoCheck +=      (especies.indexOf(item.especie) == -1) ? "<h5>"+item.especie+"</h5><hr></div>": "";
-                         
-                        ContenidoCheck +=  (titulos.indexOf(item.nombreE) == -1) ? "</div><div class='col-lg-12 col-sm-12' align='center'>" : "";
-                        ContenidoCheck +=      (titulos.indexOf(item.nombreE) == -1) ? "<h5>"+item.nombreE+"</h5><hr></div>": "";
+                        
+                        if(especies.indexOf(item.especie) == -1){
+                            ContenidoCheck +=  "</div><div class='col-lg-12 col-sm-12' align='center'>";
+                            ContenidoCheck +=      "<h5>"+item.especie+"</h5><hr></div>";
+                            
+                            titulos = new Array();
+                            e = 0;
+
+                        }
+                        
+                        if(titulos.indexOf(item.nombreE) == -1){
+                            ContenidoCheck +=       "</div><div class='col-lg-12 col-sm-12' align='center'>";
+                            ContenidoCheck +=           "<h5>"+item.nombreE+"</h5><hr>";
+                            ContenidoCheck +=           "<div class='form-group form-check'>";
+                            ContenidoCheck +=               "<input type='checkbox' class='form-check-input' name='inputPdf' data-especie='"+item.especie+"' data-tipo='D' data-etapa='"+item.nombreE+"' id='Check"+item.especie+item.nombreE+"'>";
+                            ContenidoCheck +=               "<label class='form-check-label' for='Check"+item.especie+item.nombreE+"'> <strong> Marcar / Desmarcar Etapa</strong></label>";
+                            ContenidoCheck +=           "</div>";
+                            ContenidoCheck +=       "</div>";
+
+                        }
+
                         ContenidoCheck +=  (e%3 == 0) ? "</div><div class='form-group row'>" : "";
                         ContenidoCheck +=       "<div class='col-lg-4 col-sm-12'>";
                         ContenidoCheck +=           "<div class='form-group form-check'>";
-                        ContenidoCheck +=               "<input type='checkbox' class='form-check-input' name='inputPdf' data-etap='"+item.nombreE+"' data-nom='"+nombre+"' id='"+item.id_prop_mat_cli+"' "+check+">";
+                        ContenidoCheck +=               "<input type='checkbox' class='form-check-input' name='inputPdf' data-especie='"+item.especie+"' data-etapa='"+item.nombreE+"' data-nom='"+nombre+"' id='"+item.id_prop_mat_cli+"' "+check+">";
                         ContenidoCheck +=               "<label class='form-check-label' for='"+item.id_prop_mat_cli+"'> <strong>"+nombre+"</strong></label>";
                         ContenidoCheck +=           "</div>";
                         ContenidoCheck +=       "</div>";
@@ -312,12 +331,14 @@
                             ContenidoObs += "<td "+minText(item.num_anexo)+"</td>";
     
                             let obs = item.Obs.split(" && ");
-                            let gen = obs[0].split(" -> ");
-                            let gro = obs[1].split(" -> ");
-                            let wee = obs[2].split(" -> ");
-                            let phy = obs[3].split(" -> ");
-                            let soi = obs[4].split(" -> ");
+                            let obsG = obs[0].split(" -> ");
+                            let gen = obs[1].split(" -> ");
+                            let gro = obs[2].split(" -> ");
+                            let wee = obs[3].split(" -> ");
+                            let phy = obs[4].split(" -> ");
+                            let soi = obs[5].split(" -> ");
     
+                            ContenidoObs += "<td><input type='text' class='form-control form-control-sm inp-lib-text' name='observation' data-id='"+item.num_anexo+"' data-name='Obs._General' value='"+obsG[1]+"'  maxlength='130'></td>";
                             ContenidoObs += "<td "+minText(gen[0])+"</td>";
                             ContenidoObs += "<td><input type='text' class='form-control form-control-sm inp-lib-text' name='observation' data-id='"+item.num_anexo+"' data-name='General_Status' value='"+gen[1]+"'  maxlength='130'></td>";
                             ContenidoObs += "<td "+minText(gro[0])+"</td>";
@@ -334,7 +355,7 @@
                         ContenidoObs += "<tr>";
                             ContenidoObs += "<td>"+(i+1)+"</td>";
                             ContenidoObs += "<td "+minText(item.num_anexo)+"</td>";
-                            ContenidoObs += "<td colspan='10' align='center'> Este anexo no posee observaciones debido a que no posee visitas </td>";
+                            ContenidoObs += "<td colspan='11' align='center'> Este anexo no posee observaciones debido a que no posee visitas </td>";
                         ContenidoObs += "</tr>";
 
                     }
@@ -342,10 +363,10 @@
                 });
 
             }else if(resp[0].status == "success" && resp[0].data == null){
-                ContenidoObs = "<tr> <td colspan='12' style='text-align:center'> No existen observaciones </td> </tr>";
+                ContenidoObs = "<tr> <td colspan='13' style='text-align:center'> No existen observaciones </td> </tr>";
 
             }else if(resp[0].status == "error"){
-                ContenidoObs = "<tr> <td colspan='12' style='text-align:center'> Ups(2).. Hemos encontrado una falla en la comunicación con el sistema, si el problema persiste notifique a sistema. </td> </tr>";
+                ContenidoObs = "<tr> <td colspan='13' style='text-align:center'> Ups(2).. Hemos encontrado una falla en la comunicación con el sistema, si el problema persiste notifique a sistema. </td> </tr>";
                 
             }
 
@@ -368,11 +389,11 @@
 
     function traerInfoPdf(info,num,nom,cli){
         // Data del ajax
-        var data = "";
+        let data = "";
         data = "action=traerInfoPdf";
 
         // Temporada de operacion
-        var Temporada = document.getElementById("selectTemporada").value;
+        let Temporada = document.getElementById("selectTemporada").value;
         data += "&Temporada="+Temporada;
 
         // Info
@@ -385,13 +406,13 @@
             dataType:'JSON',
             async: false
         }).done(function(resp){
-            var ContenidoCheck = "";
-            var ContenidoObs = "";
+            let ContenidoCheck = "";
+            let ContenidoObs = "";
 
             if(resp[1].status == "success" && resp[1].data != null){
 
-                var titulos = new Array();
-                var e = 0;
+                let titulos = new Array();
+                let e = 0;
 
                 ContenidoCheck +=   "<div class='col-lg-12 col-sm-12'>";
                 ContenidoCheck +=       "<h1 class='title'> Datos del PDF </h1><hr>";
@@ -405,17 +426,26 @@
 
                 $.each(resp[1].data,function(i,item){
                     if(item.especial == "NO" || (item.especial == "SI" && cli.toLowerCase().includes("syngenta"))){
-                        var nombre = (item.sub.trim() == item.pri.trim()) ? item.sub.trim() : item.pri.trim()+" - "+item.sub.trim();
-                        var check = (item.etapa <= resp[2].data.etapa)? "checked":"";
+                        let nombre = (item.sub.trim() == item.pri.trim()) ? item.sub.trim() : item.pri.trim()+" - "+item.sub.trim();
+                        let check = (item.etapa <= resp[2].data.etapa)? "checked":"";
 
                         e = (titulos.indexOf(item.nombreE) == -1)? 0 : e+1;
                         
-                        ContenidoCheck +=  (titulos.indexOf(item.nombreE) == -1) ? "</div><div class='col-lg-12 col-sm-12' align='center'>" : "";
-                        ContenidoCheck +=      (titulos.indexOf(item.nombreE) == -1) ? "<h5>"+item.nombreE+"</h5><hr></div>": "";
+                        if(titulos.indexOf(item.nombreE) == -1){
+                            ContenidoCheck +=       "</div><div class='col-lg-12 col-sm-12' align='center'>";
+                            ContenidoCheck +=           "<h5>"+item.nombreE+"</h5><hr>";
+                            ContenidoCheck +=           "<div class='form-group form-check'>";
+                            ContenidoCheck +=               "<input type='checkbox' class='form-check-input' name='inputPdf' data-tipo='D' data-etapa='"+item.nombreE+"' id='Check"+item.nombreE+"'>";
+                            ContenidoCheck +=               "<label class='form-check-label' for='Check"+item.nombreE+"'> <strong> Marcar / Desmarcar Etapa</strong></label>";
+                            ContenidoCheck +=           "</div>";
+                            ContenidoCheck +=       "</div>";
+
+                        }
+
                         ContenidoCheck +=  (e%3 == 0) ? "</div><div class='form-group row'>" : "";
                         ContenidoCheck +=       "<div class='col-lg-4 col-sm-12'>";
                         ContenidoCheck +=           "<div class='form-group form-check'>";
-                        ContenidoCheck +=               "<input type='checkbox' class='form-check-input' name='inputPdf' data-nom='"+nombre+"' id='"+item.id_prop_mat_cli+"' "+check+">";
+                        ContenidoCheck +=               "<input type='checkbox' class='form-check-input' name='inputPdf' data-etapa='"+item.nombreE+"' data-nom='"+nombre+"' id='"+item.id_prop_mat_cli+"' "+check+">";
                         ContenidoCheck +=               "<label class='form-check-label' for='"+item.id_prop_mat_cli+"'> <strong>"+nombre+"</strong></label>";
                         ContenidoCheck +=           "</div>";
                         ContenidoCheck +=       "</div>";
@@ -444,6 +474,7 @@
                     ContenidoObs += "<tr>";
                         ContenidoObs += "<td>"+(i+1)+"</td>";
                         ContenidoObs += "<td "+minText(item.num_anexo)+"</td>";
+                        ContenidoObs += "<td><input type='text' class='form-control form-control-sm inp-lib-text' name='observation' data-id='"+item.num_anexo+"' data-name='General_Status' value='"+item.obs+"' maxlength='130'></td>";
                         ContenidoObs += "<td "+minText(item.estado_gen_culti)+"</td>";
                         ContenidoObs += "<td><input type='text' class='form-control form-control-sm inp-lib-text' name='observation' data-id='"+item.num_anexo+"' data-name='General_Status' value='"+item.obs_gen+"' maxlength='130'></td>";
                         ContenidoObs += "<td "+minText(item.estado_crec)+"</td>";
@@ -459,10 +490,10 @@
                 });
 
             }else if(resp[0].status == "success" && resp[0].data == null){
-                ContenidoObs = "<tr> <td colspan='12' style='text-align:center'> No existen observaciones </td> </tr>";
+                ContenidoObs = "<tr> <td colspan='13' style='text-align:center'> No existen observaciones </td> </tr>";
 
             }else if(resp[0].status == "error"){
-                ContenidoObs = "<tr> <td colspan='12' style='text-align:center'> Ups(2).. Hemos encontrado una falla en la comunicación con el sistema, si el problema persiste notifique a sistema. </td> </tr>";
+                ContenidoObs = "<tr> <td colspan='13' style='text-align:center'> Ups(2).. Hemos encontrado una falla en la comunicación con el sistema, si el problema persiste notifique a sistema. </td> </tr>";
                 
             }
 
@@ -624,23 +655,33 @@
     var checks = document.getElementById("formPdf");
         
     checks.addEventListener("click", function(e){
-        if(e.target.checked == true && e.target.id == "todosCheck"){
-            var checks = document.getElementsByName("inputPdf");
+        let checks = document.getElementsByName("inputPdf");
+
+        if(e.target.id == "todosCheck"){
+            let estado = (e.target.checked)?true:false;
+
             for (i = 0; i < checks.length; i++){
                 if(checks[i].type == "checkbox"){
-                    checks[i].checked = true;
+                    checks[i].checked = estado;
 
                 }
             } 
 
-        }else if(e.target.id == "todosCheck"){
-            var checks = document.getElementsByName("inputPdf");
-            for (i = 0; i < checks.length; i++){
-                if(checks[i].type == "checkbox"){
-                    checks[i].checked = false
+        }else if(e.target.name == "inputPdf"){
+            if(e.target.dataset.tipo == "D"){
+                let etapa = e.target.dataset.etapa;
+                let estado = (e.target.checked)?true:false;
+                let especie = e.target.dataset.especie;
+
+                for (i = 0; i < checks.length; i++){
+                    if(checks[i].type == "checkbox" && checks[i].dataset.etapa == etapa && (checks[i].dataset.especie == especie || checks[i].dataset.especie == undefined)){
+                        checks[i].checked = estado;
+    
+                    }
 
                 }
-            } 
+
+            }
 
         }
         
@@ -711,8 +752,8 @@
         /* Checks */
         let checks = new Array();
         for(let i = 0; i < input.length; i++){
-            if(input[i].checked){
-                checks.push({0 : input[i].id, 1 : input[i].dataset.nom, 2 : input[i].dataset.etap});
+            if(input[i].checked && input[i].dataset.tipo == undefined){
+                checks.push({0 : input[i].id, 1 : input[i].dataset.nom, 2 : input[i].dataset.etapa, 3 : (input[i].dataset.especie == undefined)?"-":input[i].dataset.especie});
 
             }
 
@@ -724,7 +765,7 @@
         let obs = new Object();
         for(let i = 0; i < observacion.length; i++){
             if(observacion[i].value != ""){
-                obs[observacion[i].dataset.id] = (obs[observacion[i].dataset.id]) ? obs[observacion[i].dataset.id]+" || "+observacion[i].dataset.name+": "+observacion[i].value : observacion[i].dataset.name+": "+observacion[i].value;
+                obs[observacion[i].dataset.id] = (obs[observacion[i].dataset.id]) ? obs[observacion[i].dataset.id]+" || "+observacion[i].dataset.name.replace(/_/g," ")+": "+observacion[i].value : observacion[i].dataset.name.replace(/_/g," ")+": "+observacion[i].value;
 
             }
 

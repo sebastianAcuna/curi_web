@@ -1,227 +1,110 @@
 <?php
-    require_once '../../core/db/conectarse_db.php';
+
+//  ini_set('display_errors', 1);
+//     ini_set('display_startup_errors', 1);
+//     error_reporting(E_ALL);
+    // require_once '../../core/db/conectarse_db.php';
+    require "../../core/db/conectarse_db.php";
     header("Content-Type: application/vnd.ms-excel charset=iso-8859-1");
     header("Content-Disposition: attachment; filename=export".date("d-m-Y").".xls");
 
     $tituloFiltros = "Los actuales registros han sido filtrados por:";
     
-    $temporada = (isset($_REQUEST['Temporada'])?$_REQUEST['Temporada']:NULL);
-    $temporada = filter_var($temporada,FILTER_SANITIZE_STRING);
+    $respuesta ;
+    $filtro = "";
+    $bind = array() ;
+   
+    $filtro = " WHERE id_export IS NOT NULL ";
+    if($_REQUEST['campo0'] != ""){ $filtro .= " AND ST.id_esp =  ? "; array_push($bind,array("Tipo" => "INT", "Dato" => $_REQUEST['campo0'])); }
+    if($_REQUEST['campo1'] != ""){ $filtro .= " AND C.razon_social LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo1']."%")); }
+    if($_REQUEST['campo2'] != ""){ $filtro .= " AND M.nom_hibrido LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo2']."%")); }
+    if($_REQUEST['campo3'] != ""){ $filtro .= " AND AC.num_anexo LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo3']."%")); }
+    if($_REQUEST['Temporada'] != ""){ $filtro .= " AND ST.id_tempo = ? "; array_push($bind,array("Tipo" => "INT", "Dato" => $_REQUEST['Temporada'])); }
+    if($_REQUEST['campo4'] != ""){ $filtro .= " AND A.razon_social LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo4']."%")); }
     
-    $order = (isset($_REQUEST['Orden'])?$_REQUEST['Orden']:NULL);
-    $order = filter_var($order,FILTER_SANITIZE_NUMBER_INT);
-
-    $export = (isset($_REQUEST['Export'])?$_REQUEST['Export']:NULL);
-    $export = filter_var($export,FILTER_SANITIZE_NUMBER_INT);
-
-    if($export == 1){
-        $especie = (isset($_REQUEST['FPla1'])?$_REQUEST['FPla1']:NULL);
-        $especie = filter_var($especie,FILTER_SANITIZE_STRING);
-        if($especie != "") $tituloFiltros .= " Especie (".$especie.")";
-
-        $temporada = (isset($_REQUEST['FPla2'])?$_REQUEST['FPla2']:NULL);
-        $temporada = filter_var($temporada,FILTER_SANITIZE_STRING);
-        if($temporada != "") $tituloFiltros .= " Temporada (".$temporada.")";
-
-        $cliente = (isset($_REQUEST['FPla3'])?$_REQUEST['FPla3']:NULL);
-        $cliente = filter_var($cliente,FILTER_SANITIZE_STRING);
-        if($cliente != "") $tituloFiltros .= " Cliente (".$cliente.")";
-        
-        $variedad = (isset($_REQUEST['FPla4'])?$_REQUEST['FPla4']:NULL);
-        $variedad = filter_var($variedad,FILTER_SANITIZE_STRING);
-        if($variedad != "") $tituloFiltros .= " Variedad (".$variedad.")";
-        
-        $anexo = (isset($_REQUEST['FPla5'])?$_REQUEST['FPla5']:NULL);
-        $anexo = filter_var($anexo,FILTER_SANITIZE_STRING);
-        if($anexo != "") $tituloFiltros .= " Anexo (".$anexo.")";
-        
-        $lote = (isset($_REQUEST['FPla6'])?$_REQUEST['FPla6']:NULL);
-        $lote = filter_var($lote,FILTER_SANITIZE_STRING);
-        if($lote != "") $tituloFiltros .= " Lote Cliente (".$lote.")";
-        
-        $agricultor = (isset($_REQUEST['FPla7'])?$_REQUEST['FPla7']:NULL);
-        $agricultor = filter_var($agricultor,FILTER_SANITIZE_STRING);
-        if($agricultor != "") $tituloFiltros .= " Agricultor (".$agricultor.")";
-        
-        $hectareas = (isset($_REQUEST['FPla8'])?$_REQUEST['FPla8']:NULL);
-        $hectareas = filter_var($hectareas,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($hectareas != "") $tituloFiltros .= " Hectareas (".$hectareas.")";
-        
-        $fin = (isset($_REQUEST['FPla9'])?$_REQUEST['FPla9']:NULL);
-        $fin = filter_var($fin,FILTER_SANITIZE_STRING);
-        if($fin != "") $tituloFiltros .= " Fin de lote (".$fin.")";
-        
-        $kgsR = (isset($_REQUEST['FPla10'])?$_REQUEST['FPla10']:NULL);
-        $kgsR = filter_var($kgsR,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($kgsR != "") $tituloFiltros .= " Kgs Recepcionado (".$kgsR.")";
-        
-        $kgsL = (isset($_REQUEST['FPla11'])?$_REQUEST['FPla11']:NULL);
-        $kgsL = filter_var($kgsL,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($kgsL != "") $tituloFiltros .= " Kgs Limpios (".$kgsL.")";
-        
-        $kgsE = (isset($_REQUEST['FPla12'])?$_REQUEST['FPla12']:NULL);
-        $kgsE = filter_var($kgsE,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($kgsE != "") $tituloFiltros .= " Kgs Exportados (".$kgsE.")";
+    if($_REQUEST['campo5'] != ""){ $filtro .= " AND ST.lote_cliente LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo5']."%")); }
     
-        /**********/
-        /* Filtro */
-        /**********/
+    if($_REQUEST['campo6'] != ""){ $filtro .= " AND ST.hectareas LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo6']."%")); }
+    if($_REQUEST['campo7'] != ""){ $filtro .= " AND ST.fin_lote LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo7']."%")); }
 
-        /* $filtro = " WHERE F.id_est_fic = 2";
-        if($especie != "") $filtro .= " AND x LIKE '%$especie%'";
-        if($temporada != "") $filtro .= " AND x LIKE '%$temporada%'";
-        if($cliente != "") $filtro .= " AND x LIKE '%$cliente%'";
-        if($variedad != "") $filtro .= " AND  x LIKE '%$variedad%'";
-        if($anexo != "") $filtro .= " AND x LIKE '%$anexo%'";
-        if($lote != "") $filtro .= " AND x LIKE '%$lote%'";
-        if($agricultor != "") $filtro .= " AND x LIKE '%$agricultor%'";
-        if($hectareas != "") $filtro .= " AND x LIKE '%$hectareas%'";
-        if($fin != "") $filtro .= " AND x LIKE '%$fin%'";
-        if($kgsR != "") $filtro .= " AND x LIKE '%$kgsR%'";
-        if($kgsL != "") $filtro .= " AND x LIKE '%$kgsL%'";
-        if($kgsE != "") $filtro .= " AND x LIKE '%$kgsE%'"; */
 
-        /*********/
-        /* Orden */
-        /*********/
 
-        /* $orden = "";
-        switch($order){
-            default:
-                $orden = "ORDER BY fieldman DESC";
-            break;
+    if($_REQUEST['campo8'] != ""){ $filtro .= " AND ST.kgs_recepcionado LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo8']."%")); }
+    if($_REQUEST['campo9'] != ""){ $filtro .= " AND ST.kgs_limpios LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo9']."%")); }
+    if($_REQUEST['campo10'] != ""){ $filtro .= " AND ST.kgs_exportados LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$_REQUEST['campo10']."%")); }
 
-        } */
 
-        /*******/
-        /* SQL */
-        /*******/
+     /* CONEXION */
+     $conexion = new Conectar();
+     $conexion = $conexion->conexion();
 
-        /* $conexion = new Conectar();
-        $sql = "";
-        $conexion = $conexion->conexion();
+     $sql = "SELECT 
+                            ST.id_export,
+                            ST.id_export_sap,  
+                            ST.id_esp,  
+                            ST.id_cli,  
+                            ST.id_materiales,  
+                            ST.id_ac,  
+                            ST.id_tempo,  
+                            ST.id_agric,  
+                            ST.lote_cliente,  
+                            ST.hectareas,  
+                            ST.fin_lote,  
+                            ST.kgs_recepcionado,  
+                            ST.kgs_limpios,  
+                            ST.kgs_exportados,  
+                            ST.lote_campo,  
+                            A.razon_social AS nombre_agricultor,
+                            C.razon_social AS nombre_cliente,
+                            E.nombre AS nombre_especie,
+                            M.nom_hibrido AS nombre_material,
+                            AC.num_anexo
+                        FROM export ST
+                        INNER JOIN  especie E USING(id_esp)
+                        INNER JOIN  materiales M USING(id_materiales)
+                        INNER JOIN  cliente C USING(id_cli)
+                        INNER JOIN  anexo_contrato AC USING(id_ac)
+                        INNER JOIN agricultor A USING(id_agric)
+                        $filtro ";
+
+
+        // echo $sql;
         $consulta = $conexion->prepare($sql);
-        $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
-        $consulta->execute(); */
 
-        $exportsP = array();
+        $posicion = 0;
 
-        /* if($consulta->rowCount() > 0){
-            $exportsP = $consulta->fetchAll(PDO::FETCH_ASSOC);
+        foreach($bind AS $dato){
+            $posicion++;
+            switch($dato["Tipo"]){
+                case "STR":
+                    $consulta->bindValue($posicion,$dato["Dato"], PDO::PARAM_STR);
+                break;
+                case "INT":
+                    $consulta->bindValue($posicion,$dato["Dato"], PDO::PARAM_INT);
+                break;
 
-        } */
+            }
+        }
 
-        $tituloFicha = "Planta";
+        $consulta->execute();
+        if($consulta->rowCount() > 0){
+            $respuesta = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-    }elseif($export == 2){
-        $especie = (isset($_REQUEST['FRec1'])?$_REQUEST['FRec1']:NULL);
-        $especie = filter_var($especie,FILTER_SANITIZE_STRING);
-        if($especie != "") $tituloFiltros .= " Especie (".$especie.")";
+        }
 
-        $temporada = (isset($_REQUEST['FRec2'])?$_REQUEST['FRec2']:NULL);
-        $temporada = filter_var($temporada,FILTER_SANITIZE_STRING);
-        if($temporada != "") $tituloFiltros .= " Temporada (".$temporada.")";
-        
-        $variedad = (isset($_REQUEST['FRec3'])?$_REQUEST['FRec3']:NULL);
-        $variedad = filter_var($variedad,FILTER_SANITIZE_STRING);
-        if($variedad != "") $tituloFiltros .= " Variedad (".$variedad.")";
-        
-        $anexo = (isset($_REQUEST['FRec4'])?$_REQUEST['FRec4']:NULL);
-        $anexo = filter_var($anexo,FILTER_SANITIZE_STRING);
-        if($anexo != "") $tituloFiltros .= " Anexo (".$anexo.")";
-        
-        $agricultor = (isset($_REQUEST['FRec5'])?$_REQUEST['FRec5']:NULL);
-        $agricultor = filter_var($agricultor,FILTER_SANITIZE_STRING);
-        if($agricultor != "") $tituloFiltros .= " Agricultor (".$agricultor.")";
-        
-        $rut = (isset($_REQUEST['FRec6'])?$_REQUEST['FRec6']:NULL);
-        $rut = filter_var($rut,FILTER_SANITIZE_STRING);
-        if($rut != "") $tituloFiltros .= " Rut Agricultor (".$rut.")";
-        
-        $lote = (isset($_REQUEST['FRec7'])?$_REQUEST['FRec7']:NULL);
-        $lote = filter_var($lote,FILTER_SANITIZE_STRING);
-        if($lote != "") $tituloFiltros .= " Lote Campo (".$lote.")";
-        
-        $numero = (isset($_REQUEST['FRec8'])?$_REQUEST['FRec8']:NULL);
-        $numero = filter_var($numero,FILTER_SANITIZE_NUMBER_INT);
-        if($numero != "") $tituloFiltros .= " Numero Guia (".$numero.")";
-        
-        $peso = (isset($_REQUEST['FRec9'])?$_REQUEST['FRec9']:NULL);
-        $peso = filter_var($peso,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($peso != "") $tituloFiltros .= " Peso Bruto (".$peso.")";
-        
-        $tara = (isset($_REQUEST['FRec10'])?$_REQUEST['FRec10']:NULL);
-        $tara = filter_var($tara,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($tara != "") $tituloFiltros .= " Tara (".$tara.")";
-        
-        $neto = (isset($_REQUEST['FRec11'])?$_REQUEST['FRec11']:NULL);
-        $neto = filter_var($neto,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
-        if($neto != "") $tituloFiltros .= " Peso Neto (".$neto.")";
+        $consulta = NULL;
 
-        /**********/
-        /* Filtro */
-        /**********/
 
-        /* $filtro = " WHERE x = 1";
-        if($especie != ""){ $filtro .= " AND x LIKE '%$especie%'"; }
-        if($temporada != ""){ $filtro .= " AND x LIKE '%$temporada%'"; }
-        if($variedad != ""){ $filtro .= " AND x LIKE '%$variedad%'"; }
-        if($anexo != ""){ $filtro .= " AND x LIKE '%$anexo%'"; }
-        if($agricultor != ""){ $filtro .= " AND  x LIKE '%$agricultor%'"; }
-        if($rut != ""){ $filtro .= " AND x LIKE '%$rut%'"; }
-        if($lote != ""){ $filtro .= " AND x LIKE '%$lote%'"; }
-        if($numero != ""){ $filtro .= " AND x LIKE '%$numero%'"; }
-        if($peso != ""){ $filtro .= " AND x LIKE '%$peso%'"; }
-        if($tara != ""){ $filtro .= " AND x LIKE '%$tara%'"; }
-        if($neto != ""){ $filtro .= " AND x LIKE '%$neto%'"; } */
-        
-        /*********/
-        /* Orden */
-        /*********/
 
-        /* $orden = "";
-        switch($order){
-            default:
-                $orden = "ORDER BY F.id_export ASC";
-            break;
-        } */
 
-        /*******/
-        /* SQL */
-        /*******/
 
-        /* $conexion = new Conectar();
-        $sql = "";
-        $conexion = $conexion->conexion();
-        $consulta = $conexion->prepare($sql);
-        $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
-        $consulta->execute(); */
-
-        $exportsR = array();
-
-        /* if($consulta->rowCount() > 0){
-            $exportsR = $consulta->fetchAll(PDO::FETCH_ASSOC);
-
-        } */
-
-        $tituloFicha = "Recepcion";
-
-    }
-    $conexion = new Conectar();
-    $sql = "SELECT nombre FROM temporada WHERE id_tempo = ?";
-    $conexion = $conexion->conexion();
+    $sql = "SELECT * FROM temporada WHERE id_tempo = ? ";
     $consulta = $conexion->prepare($sql);
-    $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
+    $consulta->bindValue("1",$_REQUEST['Temporada'], PDO::PARAM_STR);
     $consulta->execute();
-
-    $temporada = "";
     if($consulta->rowCount() > 0){
-        $temporada = $consulta->fetch(PDO::FETCH_ASSOC);
-
+        $temporada = $consulta->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    $consulta = NULL;
-    $conexion = NULL;
 
 ?>
     
@@ -233,10 +116,8 @@
 </head>
 <body>
     <table border="1" cellpadding="2" cellspacing="0" width="100%"> 
-        <caption style="font-size: 2em; color: green;"> <strong> Export <?=$tituloFicha?> </strong> ( Temporada : <?=$temporada["nombre"]?> ) </caption>
-        <?php
-            if($export == 1){
-        ?>
+        <caption style="font-size: 2em; color: green;"> <strong> Export <?=$tituloFicha?> </strong> ( Temporada : <?=$temporada[0]["nombre"]?> ) </caption>
+        
                 <thead>
                     <?php
                         if(strlen($tituloFiltros) > 46):
@@ -268,23 +149,21 @@
                     <?php
                         if(count($exportsP) > 0):
                             $i = 0;
-                            foreach($exportsP AS $dato):
-                                $i++;
-                    ?>
+                            foreach($respuesta AS $value):
+                                $i++; ?>
                                 <tr>
-                                    <td><?=$i?></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                <td> <?php echo $i;?></td>
+                                    <td> <?php echo $value["nombre_especie"];?></td>
+                                    <td> <?php echo $value["nombre_cliente"];?></td>
+                                    <td> <?php echo $value["nombre_material"];?></td>
+                                    <td> <?php echo $value["num_anexo"];?></td>
+                                    <td> <?php echo $value["lote_cliente"];?></td>
+                                    <td> <?php echo $value["nombre_agricultor"];?></td>
+                                    <td> <?php echo $value["hectareas"];?></td>
+                                    <td> <?php echo $value["fin_lote"];?></td>
+                                    <td> <?php echo $value["kgs_recepcionado"];?></td>
+                                    <td> <?php echo $value["kgs_limpios"];?></td>
+                                    <td> <?php echo $value["kgs_exportados"];?></td>
                                 </tr>
                     <?php
                             endforeach;
@@ -296,71 +175,7 @@
                     <?php
                         endif;
                     ?>
-                </tbody>
-        <?php
-            }elseif($export == 2){
-        ?>
-                <thead>
-                    <?php
-                        if(strlen($tituloFiltros) > 46):
-                    ?>
-                    <tr>
-                        <th colspan="12" style="background: lightsteelblue"> <?=$tituloFiltros?> </th>
-                    </tr>
-                    <?php
-                        endif;
-                    ?>
-                    <tr style="font-size: 1em; background: lightgreen">
-                        <th> # </th>
-                        <th> Especie </th>
-                        <th> Temporada </th>
-                        <th> Variedad </th>
-                        <th> Anexo </th>
-                        <th> Agricultor </th>
-                        <th> Rut Agricultor </th>
-                        <th> Lote Campo </th>
-                        <th> Número Guía </th>
-                        <th> Peso Bruto </th>
-                        <th> Tara </th>
-                        <th> Peso Neto </th>
-                    </tr>
-                </thead>
-            
-                <tbody>
-                    <?php
-                        if(count($exportsR) > 0):
-                            $i = 0;
-                            foreach($exportsR AS $dato):
-                                $i++;
-                    ?>
-                                <tr>
-                                    <td><?=$i?></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                    <?php
-                            endforeach;
-                        else:
-                    ?>
-                            <tr> 
-                                <td colspan="12" align="center"> No existen registros asociados a los parametros establecidos en export recepcion </td>
-                            </tr>
-                    <?php
-                        endif;
-                    ?>
-                </tbody>
-        <?php
-            }
-        ?>
+            </tbody>
     </table>
 </body>
 </html>

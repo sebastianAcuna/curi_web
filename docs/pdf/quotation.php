@@ -1,5 +1,4 @@
 <?php
-
     require_once '../../assets/fpdf/fpdf.php';
     require_once '../../core/db/conectarse_db.php';
 
@@ -30,86 +29,132 @@
         }
     }
 
+
+    function aEnglish($texto){
+
+
+        switch($texto){
+            case "EXCELENTE":
+                return "EXCELLENT";
+            break;
+            case "BUENA":
+                return "GOOD";
+            break;
+            case "REGULAR":
+                return "REGULAR";
+            break;
+            case "MALA":
+                 return "BAD";
+            break;
+            case "SIN ESPECIFICAR":
+                 return "GOOD";
+            break;
+            case "RECHAZADA":
+                 return "REJECTED";
+            break;
+            case "APROBADA":
+                 return "APPROVED";
+            break;
+            case "BAJA":
+                 return "LOW";
+            break;
+            case "REGULAR":
+                 return "REGULAR";
+            break;
+            case "ALTA":
+                 return "HIGH";
+            break;
+            default :
+                return $texto;
+            break;
+        }
+
+    }
+
     function datoForaneo($tabla,$campo,$AC, $temporada){
         try{
 
-            $conexion = new Conectar();
-
-            if($tabla == "historial_predio"){
-                $sql = "SELECT group_concat(CONCAT(anno,': ', IF(descripcion = '', 'Sin cosecha', descripcion)) SEPARATOR ', ') AS Dato FROM ".$tabla;
-
-            }else{
-                $sql = "SELECT ".$tabla.".".$campo." AS Dato FROM ".$tabla;
-
-            }
-
-            // echo $sql;
-
-            switch($tabla){
-                case "anexo_contrato":
-                    $sql .= "   WHERE id_ac = ".$AC;
-                break;
-                case "materiales":
-                    $sql .= "   INNER JOIN anexo_contrato USING(id_materiales)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "agricultor":
-                    $sql .= "   
-                                INNER JOIN contrato_agricultor USING(id_agric)
-                                INNER JOIN contrato_anexo_temporada CAT USING (id_cont)
-                                INNER JOIN anexo_contrato ON (anexo_contrato.id_ac = CAT.id_ac)
-                                WHERE CAT.id_ac = ".$AC." AND CAT.id_tempo = '".$temporada."' ";
-                break;
-                case "predio":
-                    $sql .= "   INNER JOIN lote USING (id_pred)
-                                INNER JOIN anexo_contrato USING (id_lote)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "lote":
-                    $sql .= "   INNER JOIN anexo_contrato USING (id_lote)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "visita":
-                    $sql .= "   INNER JOIN anexo_contrato USING (id_ac)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "tipo_riego":
-                    $sql .= "   INNER JOIN ficha USING (id_tipo_riego)
-                                INNER JOIN anexo_contrato USING (id_ficha)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "tipo_suelo":
-                    $sql .= "   INNER JOIN ficha USING (id_tipo_suelo)
-                                INNER JOIN anexo_contrato USING (id_ficha)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "ficha":
-                    $sql .= "   INNER JOIN anexo_contrato USING (id_ficha)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "usuarios":
-                    $sql .= "   INNER JOIN ficha USING (id_usuario)
-                                INNER JOIN anexo_contrato USING (id_ficha)
-                                WHERE id_ac = ".$AC;
-                break;
-                case "historial_predio":
-                    $sql .= "   INNER JOIN ficha USING (id_ficha)
-                                INNER JOIN anexo_contrato USING (id_ficha)
-                                WHERE id_ac = ".$AC."
-                                GROUP BY id_ficha ";
-                break;
-
-            }
-
-            $conexion = $conexion->conexion();
-            $consulta = $conexion->prepare($sql);
-            $consulta->execute();
-
-            $Dato = NULL;
-
-            if($consulta->rowCount() > 0){
-                $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
-                $Dato = $resultado["Dato"];
+            $Dato = "";
+            if($tabla != "" && $campo != ""){
+                $conexion = new Conectar();
+    
+                if($tabla == "historial_predio"){
+                    $sql = "SELECT group_concat(CONCAT(anno,': ', IF(descripcion = '', 'Sin cosecha', descripcion)) SEPARATOR ', ') AS Dato FROM ".$tabla;
+    
+                }else{
+                    $sql = "SELECT ".$tabla.".".$campo." AS Dato FROM ".$tabla;
+    
+                }
+    
+                // echo $sql;
+    
+                switch($tabla){
+                    case "anexo_contrato":
+                        $sql .= "   WHERE id_ac = ".$AC;
+                    break;
+                    case "materiales":
+                        $sql .= "   INNER JOIN anexo_contrato USING(id_materiales)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "agricultor":
+                        $sql .= "   
+                                    INNER JOIN contrato_agricultor USING(id_agric)
+                                    INNER JOIN contrato_anexo_temporada CAT USING (id_cont)
+                                    INNER JOIN anexo_contrato ON (anexo_contrato.id_ac = CAT.id_ac)
+                                    WHERE CAT.id_ac = ".$AC." AND CAT.id_tempo = '".$temporada."' ";
+                    break;
+                    case "predio":
+                        $sql .= "   INNER JOIN lote USING (id_pred)
+                                    INNER JOIN anexo_contrato USING (id_lote)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "lote":
+                        $sql .= "   INNER JOIN anexo_contrato USING (id_lote)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "visita":
+                        $sql .= "   INNER JOIN anexo_contrato USING (id_ac)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "tipo_riego":
+                        $sql .= "   INNER JOIN ficha USING (id_tipo_riego)
+                                    INNER JOIN anexo_contrato USING (id_ficha)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "tipo_suelo":
+                        $sql .= "   INNER JOIN ficha USING (id_tipo_suelo)
+                                    INNER JOIN anexo_contrato USING (id_ficha)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "ficha":
+                        $sql .= "   INNER JOIN anexo_contrato USING (id_ficha)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "usuarios":
+                        $sql .= "   INNER JOIN ficha USING (id_usuario)
+                                    INNER JOIN anexo_contrato USING (id_ficha)
+                                    WHERE id_ac = ".$AC;
+                    break;
+                    case "historial_predio":
+                        $sql .= "   INNER JOIN ficha USING (id_ficha)
+                                    INNER JOIN anexo_contrato USING (id_ficha)
+                                    WHERE id_ac = ".$AC."
+                                    GROUP BY id_ficha ";
+                    break;
+    
+                }
+    
+                $conexion = $conexion->conexion();
+                $consulta = $conexion->prepare($sql);
+                $consulta->execute();
+    
+                $Dato = NULL;
+    
+                if($consulta->rowCount() > 0){
+                    $resultado = $consulta->fetch(PDO::FETCH_ASSOC);
+                    $Dato = $resultado["Dato"];
+    
+                }
 
             }
 
@@ -417,7 +462,7 @@
                     FROM fotos F 
                     INNER JOIN visita V ON V.id_visita = F.id_visita
                     WHERE V.id_ac = ? AND (vista = 'cliente' OR vista = 'ambos') AND F.estado_sincro = 1 AND favorita = '1' AND tipo = 'V' 
-                    ORDER BY fecha_hora DESC LIMIT 3";
+                    ORDER BY fecha_hora DESC LIMIT 4";
             $consulta = $conexion->prepare($sql);
             $consulta->bindValue("1",$dato["id_ac"], PDO::PARAM_STR);
             $consulta->execute();
@@ -425,6 +470,33 @@
             if($consulta->rowCount() > 0){
 
                 $fotos = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+                if($consulta->rowCount() == 4){
+                    /* Imagenes */
+                    if(isset($fotos[0])){ 
+                        $img = traerBaseIMG($fotos[0]["ruta_foto"],"");
+                        $pdf->mostrarIMG($img,5,33,100,70,"JPG","fotoUno".$dato["id_ac"]);
+
+                    }
+
+                    if(isset($fotos[1])){ 
+                        $img = traerBaseIMG($fotos[1]["ruta_foto"],"");
+                        $pdf->mostrarIMG($img,111,33,100,70,"JPG","fotoDos".$dato["id_ac"]);
+
+                    }
+
+                    if(isset($fotos[2])){ 
+                        $img = traerBaseIMG($fotos[2]["ruta_foto"],"");
+                        $pdf->mostrarIMG($img,5,113,100,70,"JPG","fotoTres".$dato["id_ac"]);
+
+                    }
+                    if(isset($fotos[3])){ 
+                        $img = traerBaseIMG($fotos[3]["ruta_foto"],"");
+                        $pdf->mostrarIMG($img,111,113,100,70,"JPG","fotoCuatro".$dato["id_ac"]);
+
+                    }
+
+                }
 
                 if($consulta->rowCount() == 3){
                     /* Imagenes */
@@ -486,15 +558,15 @@
             $pdf->Cell(40,6,'SOIL MOISTURE STATUS',1,1,'C',true);
 
             $pdf->SetXY(8,209);
-            $pdf->Cell(40,6,utf8_decode(mb_strtoupper($informacion["estado_gen_culti"],'UTF-8')),1,1,'C');
+            $pdf->Cell(40,6,utf8_decode(aEnglish(mb_strtoupper($informacion["estado_gen_culti"],'UTF-8'))),1,1,'C');
             $pdf->SetXY(48,209);
-            $pdf->Cell(40,6,utf8_decode(mb_strtoupper($informacion["estado_crec"],'UTF-8')),1,1,'C');
+            $pdf->Cell(40,6,utf8_decode(aEnglish(mb_strtoupper($informacion["estado_crec"],'UTF-8'))),1,1,'C');
             $pdf->SetXY(88,209);
-            $pdf->Cell(40,6,utf8_decode(mb_strtoupper($informacion["estado_male"],'UTF-8')),1,1,'C');
+            $pdf->Cell(40,6,utf8_decode(aEnglish(mb_strtoupper($informacion["estado_male"],'UTF-8'))),1,1,'C');
             $pdf->SetXY(128,209);
-            $pdf->Cell(40,6,utf8_decode(mb_strtoupper($informacion["estado_fito"],'UTF-8')),1,1,'C');
+            $pdf->Cell(40,6,utf8_decode(aEnglish(mb_strtoupper($informacion["estado_fito"],'UTF-8'))),1,1,'C');
             $pdf->SetXY(168,209);
-            $pdf->Cell(40,6,utf8_decode(mb_strtoupper($informacion["hum_del_suelo"],'UTF-8')),1,1,'C');
+            $pdf->Cell(40,6,utf8_decode(aEnglish(mb_strtoupper($informacion["hum_del_suelo"],'UTF-8'))),1,1,'C');
 
             /* Estado */
             $pdf->SetFont('Arial','B',8);
@@ -503,13 +575,18 @@
             $pdf->Ln(5);
 
             $observaciones = explode("||",$datos[$informacion["num_anexo"]]);
-            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[0],130)),0,'L');
-            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[1],130)),0,'L');
-            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[2],130)),0,'L');
-            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[3],130)),0,'L');
-            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[4],130)),0,'L');
-            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[5],130)),0,'L');
 
+            // echo "<pre>";
+            // var_dump($observaciones);
+            // echo "</pre>";
+            $pdf->SetFont('Arial','B',7);
+            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[0],250)),0,'L');
+            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[1],250)),0,'L');
+            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[2],250)),0,'L');
+            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[3],250)),0,'L');
+            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[4],250)),0,'L');
+            $pdf->MultiCell(0,5,utf8_decode(textMin($observaciones[5],250)),0,'L');
+            $pdf->SetFont('Arial','',8);
             $pageMas = 0;
 
             $etapa = array();
@@ -547,7 +624,7 @@
                         $sql = "SELECT valor
                                 FROM detalle_visita_prop  DVP
                                 INNER JOIN visita V USING (id_visita) 
-                                WHERE id_ac = ? AND id_prop_mat_cli = ? ";
+                                WHERE id_ac = ? AND id_prop_mat_cli = ? ORDER BY id_det_vis_prop DESC LIMIT 1";
                         $consulta = $conexion->prepare($sql);
                         $consulta->bindValue("1",$dato["id_ac"], PDO::PARAM_INT);
                         $consulta->bindValue("2",$check[0], PDO::PARAM_INT);

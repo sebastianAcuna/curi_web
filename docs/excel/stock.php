@@ -166,9 +166,9 @@
                             <td> <?php echo $value["seed_treated_by"];?></td>
                             <td> <?php echo $value["curimapu_treated_by"];?></td>
                             <td> <?php echo $value["customer_tsw"];?></td>
-                            <td> <?php echo $value["customer_germ_porcentaje"];?></td>
+                            <td> <?php echo number_format($value["customer_germ_porcentaje"], 2, ",", "." );?></td>
                             <td> <?php echo $value["tsw"];?></td>
-                            <td> <?php echo $value["curimapu_germ_porcentaje"];?></td>
+                            <td> <?php echo number_format($value["curimapu_germ_porcentaje"], 2, ",", "." );?></td>
                     
                     </tr>
                  <?php  endforeach;  ?>

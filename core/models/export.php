@@ -192,6 +192,8 @@ require_once '../../db/conectarse_db.php';
 
                 // }
 
+                
+
 
                 if($this->id_esp != ""){ $filtro .= " AND ST.id_esp =  ? "; array_push($bind,array("Tipo" => "INT", "Dato" => $this->id_esp)); }
                 if($this->id_cli != ""){ $filtro .= " AND C.razon_social LIKE ? "; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$this->id_cli."%")); }

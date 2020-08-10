@@ -474,41 +474,59 @@ $('#FPla1').on("select2:select", (e) =>  informacionPlanta(1));
     function descargaExcel(e){
         e.preventDefault();
 
-        var filtros = "";
-        
+        let filtros = document.getElementsByName("FPla");
+
+
+        let data = "";
+
         //Orden de datos
-        var Orden = (obtenerOrden() > 0) ? obtenerOrden() : 0;
+        // var Orden = obtenerOrden();
+        // data += "&Orden="+Orden;
+
+
+        // Ve que pagina es y trae los datos correspondientes a tal
+        // let Des = obtenerPagina(Page);
+        // data += "&D="+Des;
 
         // Temporada de operacion
         var Temporada = document.getElementById("selectTemporada").value;
+        data += "&Temporada="+Temporada;
+
+
+        for (let i = 0; i < filtros.length; i++){
+            let value = filtros[i].value.trim();
+
+            
+            data += "&campo"+[i]+"="+value;
+        }
 
         // Pestaña activa
-        var active = document.getElementsByClassName("nav-link active")[0].id;
-        switch(active){
-            case "planta-tab":
-                activa = 1;
-                filtros = document.getElementsByName("FPla");
-            break;
+        // var active = document.getElementsByClassName("nav-link active")[0].id;
+        // switch(active){
+        //     case "planta-tab":
+        //         activa = 1;
+        //         filtros = document.getElementsByName("FPla");
+        //     break;
 
-            // case "recepcion-tab":
-            //     activa = 2;
-            //     filtros = document.getElementsByName("FRec");
-            // break;
+        //     // case "recepcion-tab":
+        //     //     activa = 2;
+        //     //     filtros = document.getElementsByName("FRec");
+        //     // break;
 
-        }
+        // }
 
-        var campos = "?Temporada="+Temporada+"&Orden="+Orden+"&Export="+activa;
+        // var campos = data;
 
-        for(let i = 0; i < filtros.length; i++){
-            if(filtros[i].value != "" && filtros[i].value != null && filtros[i].value != undefined && filtros[i].value.length > 0){
-                campos += "&"+filtros[i].id+"="+filtros[i].value;
+        // for(let i = 0; i < filtros.length; i++){
+        //     if(filtros[i].value != "" && filtros[i].value != null && filtros[i].value != undefined && filtros[i].value.length > 0){
+        //         campos += "&"+filtros[i].id+"="+filtros[i].value;
 
-            }
+        //     }
 
-        }
+        // }
         
         let form = document.getElementById('formExport');
-        form.action = "docs/excel/export.php"+campos;
+        form.action = "docs/excel/export.php?var=2"+data;
         form.submit();
 
     }

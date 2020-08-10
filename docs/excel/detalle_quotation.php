@@ -10,7 +10,7 @@
     $numero = filter_var($numero,FILTER_SANITIZE_STRING);
 
     $conexion = new Conectar();
-    $sql = "SELECT E.nombre AS especie, M.nom_hibrido, D.superficie_contr, UM.nombre AS unidadM, D.kg_contratados, D.precio, Mo.nombre AS moneda, I.nombre AS incoterm, C.nombre AS condicion, TC.nombre AS certificacion, D.humedad, D.germinacion, D.pureza_genetica, D.fecha_recep_sem, D.pureza_fisica, D.fecha_despacho, D.enfermedades, D.maleza, D.declaraciones, TE.nombre AS envase, TE.neto, TD.nombre AS despacho, D.observaciones_del_precio
+    $sql = "SELECT D.id_de_quo, E.nombre AS especie, M.nom_hibrido, D.superficie_contr, UM.nombre AS unidadM, D.kg_contratados, D.precio, D.kgxha, Mo.nombre AS moneda, I.nombre AS incoterm, C.nombre AS condicion, TC.nombre AS certificacion, D.humedad, D.germinacion, D.pureza_genetica, D.fecha_recep_sem, D.pureza_fisica, D.fecha_despacho, D.enfermedades, D.maleza, D.declaraciones, TE.nombre AS envase, TE.neto, TD.nombre AS despacho, D.observaciones_del_precio
             FROM detalle_quotation D
             INNER JOIN materiales M ON M.id_materiales = D.id_materiales
             INNER JOIN especie E ON E.id_esp = M.id_esp
@@ -56,9 +56,9 @@
                 <th> Variedad </th>
                 <th> Superficie contratada </th>
                 <th> Superficie </th>
-                <th> Contrated </th>
                 <th> Kg Contracted </th>
                 <th> Price </th>
+                <th> (=) Contrated </th>
                 <th> Currency </th>
                 <th> Kg/Ha </th>
                 <th> Incoterms </th>
@@ -77,6 +77,7 @@
                 <th> Kg Envase </th>
                 <th> Tipo de despacho </th>
                 <th> Observaciones de precio </th>
+                <th> N° Detalle </th>
             </tr>
         </thead>
 
@@ -91,17 +92,17 @@
                         <td><?=$i?></td>
                         <td><?=$dato["especie"]?></td>
                         <td><?=$dato["nom_hibrido"]?></td>
-                        <td><?=$dato["superficie_contr"]?></td>
+                        <td><?=number_format($dato["superficie_contr"], 2, ",", "." )?></td>
                         <td><?=$dato["unidadM"]?></td>
-                        <td><?=round(($dato["kg_contratados"]*$dato["precio"]),2)?></td>
-                        <td><?=$dato["kg_contratados"]?></td>
-                        <td><?=$dato["precio"]?></td>
+                        <td><?=number_format($dato["kg_contratados"], 2, ",", "." )?></td>
+                        <td><?=number_format($dato["precio"], 2, ",", "." )?></td>
+                        <td><?=number_format(round(($dato["kg_contratados"]*$dato["precio"]),2), 2, ",", "." )?></td>
                         <td><?=$dato["moneda"]?></td>
-                        <td><?=round(($dato["kg_contratados"]/$dato["superficie_contr"]),2)?></td>
+                        <td><?=number_format($dato["kgxha"], 2, ",", "." )?></td>
                         <td><?=$dato["incoterm"]?></td>
                         <td><?=$dato["condicion"]?></td>
                         <td><?=$dato["certificacion"]?></td>
-                        <td><?=$dato["humedad"]?></td>
+                        <td><?=number_format($dato["humedad"], 2, ",", "." )?></td>
                         <td><?=$dato["germinacion"]?></td>
                         <td><?=$dato["pureza_genetica"]?></td>
                         <td><?=$dato["fecha_recep_sem"]?></td>
@@ -114,13 +115,14 @@
                         <td><?=$dato["neto"]?></td>
                         <td><?=$dato["despacho"]?></td>
                         <td><?=$dato["observaciones_del_precio"]?></td>
+                        <td><?=$dato["id_de_quo"]?></td>
                     </tr>
         <?php
                 endforeach;
             else:
         ?>
                 <tr> 
-                    <td colspan="18" align="center"> No existen detalles para la quotation </td>
+                    <td colspan="19" align="center"> No existen detalles para la quotation </td>
                 </tr>
         <?php
             endif;

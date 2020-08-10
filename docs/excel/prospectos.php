@@ -7,11 +7,22 @@
 
     }
 
+
+
+    function formatoNumerico($numero){
+
+        return number_format($numero, 2, ",", "." );
+    }
+
     require_once '../../core/db/conectarse_db.php';
     header("Content-Type: application/vnd.ms-excel charset=iso-8859-1");
     header("Content-Disposition: attachment; filename=prospecto_".date("d-m-Y").".xls");
 
     $tituloFiltros = "Los actuales registros han sido filtrados por:";
+
+    // echo "<pre>";
+    // var_dump($_REQUEST);
+    // echo "<?pre>";
     
     $temporada = (isset($_REQUEST['Temporada'])?$_REQUEST['Temporada']:NULL);
     $temporada = filter_var($temporada,FILTER_SANITIZE_STRING);
@@ -39,7 +50,7 @@
         $agricultor = filter_var($agricultor,FILTER_SANITIZE_STRING);
         if($agricultor != "") $tituloFiltros .= " Agricultor (".$agricultor.")";
         
-        $rut = (isset($_REQUEST['FProsA65'])?$_REQUEST['FProsA5']:NULL);
+        $rut = (isset($_REQUEST['FProsA5'])?$_REQUEST['FProsA5']:NULL);
         $rut = filter_var($rut,FILTER_SANITIZE_STRING);
         if($rut != "") $tituloFiltros .= " Rut (".$rut.")";
         
@@ -47,75 +58,75 @@
         $telefono = filter_var($telefono,FILTER_SANITIZE_STRING);
         if($telefono != "") $tituloFiltros .= " Telefono (".$telefono.")";
         
-        $oferta = (isset($_REQUEST['FProsA10'])?$_REQUEST['FProsA10']:NULL);
+        $oferta = (isset($_REQUEST['FProsA9'])?$_REQUEST['FProsA9']:NULL);
         $oferta = filter_var($oferta,FILTER_SANITIZE_STRING);
         if($oferta != "") $tituloFiltros .= " Oferta (".$oferta.")";
         
-        $region = (isset($_REQUEST['FProsA11'])?$_REQUEST['FProsA12']:NULL);
+        $region = (isset($_REQUEST['FProsA10'])?$_REQUEST['FProsA10']:NULL);
         $region = filter_var($region,FILTER_SANITIZE_STRING);
         /* if($region != "") $tituloFiltros .= " Region (".$region.")"; */
 
-        $provincia = (isset($_REQUEST['FProsA12'])?$_REQUEST['FProsA12']:NULL);
+        $provincia = (isset($_REQUEST['FProsA11'])?$_REQUEST['FProsA11']:NULL);
         $provincia = filter_var($provincia,FILTER_SANITIZE_STRING);
         /* if($provincia != "") $tituloFiltros .= " Provincia (".$provincia.")"; */
 
-        $comuna = (isset($_REQUEST['FProsA13'])?$_REQUEST['FProsA13']:NULL);
+        $comuna = (isset($_REQUEST['FProsA12'])?$_REQUEST['FProsA12']:NULL);
         $comuna = filter_var($comuna,FILTER_SANITIZE_STRING);
         /* if($comuna != "") $tituloFiltros .= " Comuna (".$comuna.")"; */
         
-        $localidad = (isset($_REQUEST['FProsA14'])?$_REQUEST['FProsA11']:NULL);
+        $localidad = (isset($_REQUEST['FProsA13'])?$_REQUEST['FProsA13']:NULL);
         $localidad = filter_var($localidad,FILTER_SANITIZE_STRING);
         if($localidad != "") $tituloFiltros .= " Localidad (".$localidad.")";
         
-        $haDisponibles = (isset($_REQUEST['FProsA15'])?$_REQUEST['FProsA14']:NULL);
+        $haDisponibles = (isset($_REQUEST['FProsA14'])?$_REQUEST['FProsA14']:NULL);
         $haDisponibles = filter_var($haDisponibles,FILTER_SANITIZE_STRING);
         if($haDisponibles != "") $tituloFiltros .= " HA Disponibles (".$haDisponibles.")";
         
-        $direccion = (isset($_REQUEST['FProsA16'])?$_REQUEST['FProsA15']:NULL);
+        $direccion = (isset($_REQUEST['FProsA15'])?$_REQUEST['FProsA15']:NULL);
         $direccion = filter_var($direccion,FILTER_SANITIZE_STRING);
         if($direccion != "") $tituloFiltros .= " Dirección (".$direccion.")";
         
-        $repre = (isset($_REQUEST['FProsA17'])?$_REQUEST['FProsA16']:NULL);
+        $repre = (isset($_REQUEST['FProsA16'])?$_REQUEST['FProsA16']:NULL);
         $repre = filter_var($repre,FILTER_SANITIZE_STRING);
         if($repre != "") $tituloFiltros .= " Representante legal (".$repre.")";
         
-        $rutRepre = (isset($_REQUEST['FProsA18'])?$_REQUEST['FProsA17']:NULL);
+        $rutRepre = (isset($_REQUEST['FProsA17'])?$_REQUEST['FProsA17']:NULL);
         $rutRepre = filter_var($rutRepre,FILTER_SANITIZE_STRING);
         if($rutRepre != "") $tituloFiltros .= " Rut representante (".$rutRepre.")";
         
-        $telefonoRepre = (isset($_REQUEST['FProsA19'])?$_REQUEST['FProsA18']:NULL);
+        $telefonoRepre = (isset($_REQUEST['FProsA18'])?$_REQUEST['FProsA18']:NULL);
         $telefonoRepre = filter_var($telefonoRepre,FILTER_SANITIZE_NUMBER_INT);
         if($telefonoRepre != "") $tituloFiltros .= " Telefono representante (".$telefonoRepre.")";
         
-        $emailRepre = (isset($_REQUEST['FProsA20'])?$_REQUEST['FProsA19']:NULL);
+        $emailRepre = (isset($_REQUEST['FProsA19'])?$_REQUEST['FProsA19']:NULL);
         $emailRepre = filter_var($emailRepre,FILTER_SANITIZE_NUMBER_FLOAT,FILTER_FLAG_ALLOW_FRACTION);
         if($emailRepre != "") $tituloFiltros .= " Email representante (".$emailRepre.")";
         
-        $banco = (isset($_REQUEST['FProsA21'])?$_REQUEST['FProsA20']:NULL);
+        $banco = (isset($_REQUEST['FProsA20'])?$_REQUEST['FProsA20']:NULL);
         $banco = filter_var($banco,FILTER_SANITIZE_STRING);
         if($banco != "") $tituloFiltros .= " Banco (".$banco.")";
         
-        $cuentaC = (isset($_REQUEST['FProsA22'])?$_REQUEST['FProsA21']:NULL);
+        $cuentaC = (isset($_REQUEST['FProsA21'])?$_REQUEST['FProsA21']:NULL);
         $cuentaC = filter_var($cuentaC,FILTER_SANITIZE_STRING);
         if($cuentaC != "") $tituloFiltros .= " Cuenta corriente (".$cuentaC.")";
 
-        $predio = (isset($_REQUEST['FProsA23'])?$_REQUEST['FProsA22']:NULL);
+        $predio = (isset($_REQUEST['FProsA22'])?$_REQUEST['FProsA22']:NULL);
         $predio = filter_var($predio,FILTER_SANITIZE_STRING);
         if($predio != "") $tituloFiltros .= " Predio (".$predio.")";
         
-        $potrero = (isset($_REQUEST['FProsA24'])?$_REQUEST['FProsA23']:NULL);
+        $potrero = (isset($_REQUEST['FProsA23'])?$_REQUEST['FProsA23']:NULL);
         $potrero = filter_var($potrero,FILTER_SANITIZE_STRING);
         if($potrero != "") $tituloFiltros .= " Potrero (".$potrero.")";
 
-        $rotacion = (isset($_REQUEST['FProsA25'])?$_REQUEST['FProsA24']:NULL);
+        $rotacion = (isset($_REQUEST['FProsA24'])?$_REQUEST['FProsA24']:NULL);
         $rotacion = filter_var($rotacion,FILTER_SANITIZE_STRING);
         if($rotacion != "") $tituloFiltros .= " Rotación (".$rotacion.")";
         
-        $norting = (isset($_REQUEST['FProsA26'])?$_REQUEST['FProsA25']:NULL);
+        $norting = (isset($_REQUEST['FProsA25'])?$_REQUEST['FProsA25']:NULL);
         $norting = filter_var($norting,FILTER_SANITIZE_STRING);
         if($norting != "") $tituloFiltros .= " Norting (".$norting.")";
         
-        $easting = (isset($_REQUEST['FProsA27'])?$_REQUEST['FProsA26']:NULL);
+        $easting = (isset($_REQUEST['FProsA26'])?$_REQUEST['FProsA26']:NULL);
         $easting = filter_var($easting,FILTER_SANITIZE_STRING);
         if($easting != "") $tituloFiltros .= " Easting (".$easting.")";
         
@@ -156,15 +167,15 @@
         $comentario = filter_var($comentario,FILTER_SANITIZE_STRING);
         if($comentario != "") $tituloFiltros .= " Observaciones (".$comentario.")";
         
-        $prospecto = (isset($_REQUEST['FProsA36'])?$_REQUEST['FProsA35']:NULL);
+        $prospecto = (isset($_REQUEST['FProsA36'])?$_REQUEST['FProsA36']:NULL);
         $prospecto = filter_var($prospecto,FILTER_SANITIZE_STRING);
         if($prospecto != "") $tituloFiltros .= " Prospecto (".$prospecto.")";
-        
-        $carga = (isset($_REQUEST['FProsA37'])?$_REQUEST['FProsA35']:NULL);
+
+        $carga = (isset($_REQUEST['FProsA37'])?$_REQUEST['FProsA37']:NULL);
         $carga = filter_var($carga,FILTER_SANITIZE_STRING);
         if($carga != "") $tituloFiltros .= " Carga (".$carga.")";
         
-        $dispositivo = (isset($_REQUEST['FProsA38'])?$_REQUEST['FProsA35']:NULL);
+        $dispositivo = (isset($_REQUEST['FProsA38'])?$_REQUEST['FProsA38']:NULL);
         $dispositivo = filter_var($dispositivo,FILTER_SANITIZE_STRING);
         if($dispositivo != "") $tituloFiltros .= " Dispositivo (".$dispositivo.")";
 
@@ -182,7 +193,7 @@
                 
         if($fieldman != ""){ $filtro .= " AND CONCAT(U.nombre,' ',U.apellido_p,' ',U.apellido_m) LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$fieldman."%")); }
         if($tempo != ""){ $filtro .= " AND P.id_tempo = ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $tempo)); }
-        if($especie != ""){ $filtro .= " AND P.id_esp LIKE ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $especie)); }
+        if($especie != ""){ $filtro .= " AND P.id_esp =  ?"; array_push($bind,array("Tipo" => "INT", "Dato" => $especie)); }
         if($agricultor != ""){ $filtro .= " AND A.razon_social LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$agricultor."%")); }
         if($rut != ""){ $filtro .= " AND A.rut LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$rut."%")); }
         if($telefono != ""){ $filtro .= " AND A.telefono LIKE ?"; array_push($bind,array("Tipo" => "STR", "Dato" => "%".$telefono."%")); }
@@ -417,7 +428,7 @@
                 $orden = "ORDER BY P.obs DESC";
             break;
             default:
-                $orden = "ORDER BY fieldman DESC";
+                $orden = "ORDER BY fecha_mod DESC";
             break;
         }
 
@@ -447,7 +458,7 @@
                     A.email_rl, 
                     A.banco, 
                     A.cuenta_corriente, 
-                    group_concat(CASE WHEN H.tipo = 'P' THEN CONCAT(H.anno,' => ',H.descripcion) END) AS rotacion, 
+                    group_concat(CASE WHEN H.tipo = 'P' THEN CONCAT(H.anno,' => ',H.descripcion) END ORDER BY H.anno DESC SEPARATOR '//') AS rotacion, 
                     P.predio, 
                     P.lote, 
                     TR.descripcion AS riego, 
@@ -479,7 +490,9 @@
                 LEFT JOIN tipo_tenencia_terreno TT ON TT.id_tipo_tenencia_terreno = P.id_tipo_tenencia_terreno 
                 LEFT JOIN tipo_tenencia_maquinaria TM ON TM.id_tipo_tenencia_maquinaria = P.id_tipo_tenencia_maquinaria 
                 LEFT JOIN cabecera_subida CS ON CS.id_cab_subida = P.id_cab_subida 
-                WHERE P.id_tempo = ? AND P.estado_sincro = 1 AND P.id_est_fic = 2 $filtro  GROUP BY P.id_ficha $orden";
+                WHERE P.id_tempo = ? AND P.estado_sincro = 1 AND P.id_est_fic = 2 $filtro GROUP BY P.id_ficha $orden";
+
+                echo $sql;
         $conexion = $conexion->conexion();
         $consulta = $conexion->prepare($sql);
         $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
@@ -555,7 +568,7 @@
         $localidad = filter_var($localidad,FILTER_SANITIZE_STRING);
         if($localidad != "") $tituloFiltros .= " Localidad (".$localidad.")";
         
-        $haDisponibles = (isset($_REQUEST['FProsP12'])?$_REQUEST['FProsP11']:NULL);
+        $haDisponibles = (isset($_REQUEST['FProsP12'])?$_REQUEST['FProsP12']:NULL);
         $haDisponibles = filter_var($haDisponibles,FILTER_SANITIZE_STRING);
         if($haDisponibles != "") $tituloFiltros .= " HA Disponibles (".$haDisponibles.")";
         
@@ -750,6 +763,9 @@
 
     }
 
+
+  
+
     $consulta = NULL;
     $conexion = NULL;
 
@@ -800,7 +816,14 @@
                             <th> Cuenta corriente </th>
                             <th> Predio </th>
                             <th> Potrero </th>
-                            <th> Rotación </th>
+                            <th style="background:lightblue;"> Año</th>
+                            <th style="background:lightblue;"> Cultivo </th>
+                            <th style="background:lightblue;"> Año</th>
+                            <th style="background:lightblue;"> Cultivo </th>
+                            <th style="background:lightblue;"> Año</th>
+                            <th style="background:lightblue;"> Cultivo </th>
+                            <th style="background:lightblue;"> Año</th>
+                            <th style="background:lightblue;"> Cultivo </th>
                             <th> Norting </th>
                             <th> Easting </th>
                             <th> Tipo de suelo </th>
@@ -825,10 +848,10 @@
                             $i = 0;
                             foreach($prospectosA AS $dato):
                                 $i++;
-                    ?>
+                                ?>
                                 <tr>
                                     <?php
-                                        $rotacion = explode(",",$dato["rotacion"]);
+                                        // $rotacion = explode(",",$dato["rotacion"]);
                                     ?>
                                     <td><?=$i?></td>
                                     <td><?=$dato["fieldman"]?></td>
@@ -842,7 +865,7 @@
                                     <td><?=$dato["provincia"]?></td>
                                     <td><?=$dato["comuna"]?></td>
                                     <td><?=$dato["localidad"]?></td>
-                                    <td><?=$dato["ha_disponibles"]?></td>
+                                    <td><?=formatoNumerico($dato["ha_disponibles"])?></td>
                                     <td><?=$dato["direccion"]?></td>
                                     <td><?=$dato["rep_legal"]?></td>
                                     <td><?=$dato["rut_rl"]?></td>
@@ -852,32 +875,53 @@
                                     <td><?=$dato["cuenta_corriente"]?></td>
                                     <td><?=$dato["predio"]?></td>
                                     <td><?=$dato["lote"]?></td>
-                                    <td style='min-width:200px'>
+
                                     <?php
-                                        if($rotacion[0] && strlen($rotacion[0]) > 8):
-                                    ?>
-                                        <?=$rotacion[0]?>
-                                    <?php
-                                        endif;
-                                        if($rotacion[1] && strlen($rotacion[1]) > 8):
-                                    ?>
-                                        <?=$rotacion[1]?>
-                                    <?php
-                                        endif;
-                                        if($rotacion[2] && strlen($rotacion[2]) > 8):
-                                    ?>
-                                        <?=$rotacion[2]?>
-                                    <?php
-                                        endif;
-                                        if($rotacion[3] && strlen($rotacion[3]) > 8):
-                                    ?>
-                                        <?=$rotacion[3]?>
-                                    <?php
-                                        endif;
-                                    ?>
-                                    </td>
-                                    <td><?=$dato["norting"]?></td>
-                                    <td><?=$dato["easting"]?></td>
+                                    
+                                        $rotacionColumnas = explode("//", $dato["rotacion"]);
+                                        $totalRotaciones = sizeof($rotacionColumnas);
+                                        $count = 0;
+
+                                            /* ANO MAS ALTO */
+                                            echo "<td>";    
+                                                // echo $count."<= ".$totalRotaciones;
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[0] : "";
+                                            echo "</td>";
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[1] : "";
+                                            echo "</td>";
+                                            $count++;
+
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[0] : "";
+                                            echo "</td>";
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[1] : "";
+                                            echo "</td>";
+                                            $count++;
+
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[0] : "";
+                                            echo "</td>";
+
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[1] : "";
+                                            echo "</td>";
+                                            $count++;
+
+                                            /*  ANNO MAS BAJO */
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[0] : "";
+                                            echo "</td>";
+                                            echo "<td>";
+                                                echo ($count <= $totalRotaciones) ? explode("=>",$rotacionColumnas[$count])[1] : "";
+                                            echo "</td>";
+                                            $count++;
+
+                                        ?>
+                                    
+                                    <td><?=number_format($dato["norting"], 7, ",", "." )?></td>
+                                    <td><?=number_format($dato["easting"], 7, ",", "." )?></td>
                                     <td><?=$dato["suelo"]?></td>
                                     <td><?=$dato["riego"]?></td>
                                     <td><?=$dato["experiencia"]?></td>
@@ -958,7 +1002,7 @@
                                     <td><?=$dato["provincia"]?></td>
                                     <td><?=$dato["comuna"]?></td>
                                     <td><?=$dato["localidad"]?></td>
-                                    <td><?=$dato["ha_disponibles"]?></td>
+                                    <td><?=formatoNumerico($dato["ha_disponibles"])?></td>
                                     <td><?=$dato["id_ficha"]?></td>
                                     <td><?=$dato["id_cab_subida"]?></td>
                                     <td><?=$dato["id_dispo_subida"]?></td>

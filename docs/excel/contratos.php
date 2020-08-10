@@ -323,7 +323,7 @@
                         <td><?=$dato["nom_hibrido"]?></td>
                         <td><?=$dato["base"]?></td>
                         <td><?=$dato["precio"]?></td>
-                        <td><?=$dato["humedad"]?></td>
+                        <td><?=number_format($dato["humedad"], 2, ",", "." )?></td>
                         <td><?=$dato["germinacion"]?></td>
                         <td><?=$dato["pureza_genetica"]?></td>
                         <td><?=$dato["pureza_fisica"]?></td>

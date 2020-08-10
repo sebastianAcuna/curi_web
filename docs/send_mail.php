@@ -23,13 +23,14 @@ function enviarCorreoDesdeSubida($idVisita){
 $html = file_get_contents('../../../docs/correo_plantilla.html');
 
 
-
 $contenidoAdjunto = array();
 $destinatario = array();
+$CC = array();
 $correoProd = array();
+$correoCC = array();
 
 $sql = "SELECT 
-U.nombre, U.apellido_p, U.apellido_m, 
+U.nombre, U.apellido_p, U.apellido_m, U.email AS correo_fieldman,
 A.razon_social AS nombre_agricultor, A.rut AS rut_agricultor, A.direccion AS direccion_agricultor, A.email AS correo_agricultor,
 L.nombre AS nombre_lote,
 P.nombre AS nombre_predio,
@@ -128,10 +129,29 @@ if($arrayVisita != null && sizeof($arrayVisita) > 0){
 
         }
 
-        array_push($correoProd, array(
-            "nombre"=>"seba.nobody@gmail.com",
-            "nombre"=>"Sebastian Acuña"
-        ));
+        $tmpCC = array(
+            array(
+                "correo"=>"seba.nobody@gmail.com",
+                "nombre"=>"Sebastian Acuña"
+            ),
+            array(
+                "correo"=>"alfredojungjohann@curimapu.com",
+                "nombre"=>" Alfredo Jungjohann"
+            ),
+            array(
+                "correo"=>"felixraulmarinarribas@gmail.com",
+                "nombre"=>"Felix Marin"
+            ),
+            array(
+                "correo"=>"tabjpara@gmail.com",
+                "nombre"=>"Josue Tableta"
+            ),
+            array(
+                "correo"=>$value["correo_fieldman"],
+                "nombre"=>$value["nombre"]." ".$value["apellido_p"]
+            )
+            );
+        array_push($correoCC, $tmpCC);
 
 
 
@@ -176,7 +196,10 @@ $correosPrueba = array(
     array(
         "correo"=>"seba.nobody@gmail.com",
         "nombre"=>"Sebastian Acuña"
-    ) , 
+    ) 
+);
+
+$correosPruebaCC = array(
     array(
         "correo"=>"felixraulmarinarribas@gmail.com",
         "nombre"=>"Felix Marin"
@@ -190,7 +213,6 @@ $correosPrueba = array(
         "correo"=>"tabjpara@gmail.com",
         "nombre"=>"Josue Tableta"
     ) 
-
 );
 
 
@@ -216,24 +238,27 @@ if($consulta->rowCount() > 0):
         switch($res["ambiente"]){
             case "DESARROLLO":
                 array_push($destinatario , $correosPrueba);
+                array_push($CC , $correosPruebaCC);
             break;
 
             case "PRODUCCION":
                 array_push($destinatario , $correoProd);
+                array_push($CC , $correoCC);
             break;
         }
     }
 
 else: 
     array_push($destinatario , $correosPrueba);
+    array_push($CC , $correosPruebaCC);
 endif;
 
 $nombreDesde = "Zionit SPA";
-enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde,$contenidoAdjunto, $html);
+enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde,$contenidoAdjunto, $html, $CC);
 }
 
 
-function enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde, $contenidoAdjunto, $html){
+function enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde, $contenidoAdjunto, $html, $CC){
     $mail = new PHPMailer;
 
     $mail->IsSMTP(); // use SMTP        
@@ -256,6 +281,11 @@ function enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde, $contenid
     }
 
 
+    foreach($CC[0] as $correos){
+        $mail->AddCC($correos["correo"], $correos["nombre"]); // recipients email
+    }
+
+
     $mail->Subject = $asunto;	
     $mail->Body .=  $html;
     $mail->IsHTML(true);
@@ -274,9 +304,9 @@ function enviarCorreo($email,$pass,$asunto,$destinatario,$nombreDesde, $contenid
     }
 
     if(!$mail->send()) {
-            mail("seba.nobody@gmail.com", "ELPARTO" ,$mail->ErrorInfo."////".error_reporting(E_ALL));
+            mail("seba.nobody@gmail.com", "NO SE ENVIO ELPARTO" ,$mail->ErrorInfo."////");
     }else{
-        mail("seba.nobody@gmail.com", "ELPARTO" ,$mail->ErrorInfo."////".error_reporting(E_ALL));
+        // mail("seba.nobody@gmail.com", "SE ENVIO ELPARTO" ,$mail->ErrorInfo."////".error_reporting(E_ALL | E_STRICT));
     }
 
 }

@@ -77,60 +77,10 @@
     /* Orden */
     /*********/
 
-    $orden = "";
-    switch($order){
-        case 1:
-            $orden = "ORDER BY C.razon_social ASC";
-        break;
-        case 2:
-            $orden = "ORDER BY C.razon_social DESC";
-        break;
-        case 3:
-            $orden = "ORDER BY quotations ASC";
-        break;
-        case 4:
-            $orden = "ORDER BY quotations DESC";
-        break;
-        case 5:
-            $orden = "ORDER BY detalles ASC";
-        break;
-        case 6:
-            $orden = "ORDER BY detalles DESC";
-        break;
-        case 7:
-            $orden = "ORDER BY especies ASC";
-        break;
-        case 8:
-            $orden = "ORDER BY especies DESC";
-        break;
-        case 9:
-            $orden = "ORDER BY materiales ASC";
-        break;
-        case 10:
-            $orden = "ORDER BY materiales DESC";
-        break;
-        case 11:
-            $orden = "ORDER BY agricultores ASC";
-        break;
-        case 12:
-            $orden = "ORDER BY agricultores DESC";
-        break;
-        case 13:
-            $orden = "ORDER BY supervisores ASC";
-        break;
-        case 14:
-            $orden = "ORDER BY supervisores DESC";
-        break;
-        default:
-            $orden = "ORDER BY C.razon_social ASC";
-        break;
-
-    }
-
     $conexion = new Conectar();
     $conexion = $conexion->conexion();
-    if($tipo == '1'){
-        $sql = "SELECT Q.id_quotation, Q.numero_contrato, C.razon_social, E.nombre, Q.obs, 
+    if($tipo == 1){
+        $sql = "SELECT Q.id_quotation, /* Q.numero_contrato, */ C.razon_social, /* E.nombre, Q.obs,  */
                 SUM(CASE WHEN UM.nombre LIKE '%HA%' THEN DQ.superficie_contr ELSE 0 END) AS superficieHA, 
                 SUM(CASE WHEN UM.nombre LIKE '%MT%' THEN DQ.superficie_contr ELSE 0 END) AS superficieMT, 
                 SUM(CASE WHEN UM.nombre LIKE '%SITE%' THEN DQ.superficie_contr ELSE 0 END) AS superficieSi, 
@@ -143,9 +93,10 @@
                 INNER JOIN moneda M ON M.id_moneda = DQ.id_moneda
                 INNER JOIN unidad_medida UM ON UM.id_um = DQ.id_um
                 INNER JOIN cliente C ON C.id_cli = Q.id_cli 
-                INNER JOIN especie E ON E.id_esp = Q.id_esp 
-                WHERE Q.id_tempo = ? 
-                GROUP BY Q.id_quotation ";
+                /* INNER JOIN especie E ON E.id_esp = Q.id_esp */ 
+                WHERE Q.id_tempo = ? $filtro
+                GROUP BY Q.id_quotation
+                ORDER BY C.razon_social ASC ";
         $consulta = $conexion->prepare($sql);
         $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
     
@@ -180,7 +131,8 @@
                 INNER JOIN cliente C ON C.id_cli = Q.id_cli 
                 INNER JOIN especie E ON E.id_esp = Q.id_esp 
                 WHERE Q.id_tempo = ? AND Q.id_cli = ? 
-                GROUP BY Q.id_quotation ";
+                GROUP BY Q.id_quotation
+                ORDER BY C.razon_social ASC ";
         $consulta = $conexion->prepare($sql);
         $consulta->bindValue("1",$temporada, PDO::PARAM_STR);
         $consulta->bindValue("2",$exl, PDO::PARAM_STR);
@@ -221,11 +173,13 @@
 <body>
     <table border="1" cellpadding="2" cellspacing="0" width="100%"> 
         <?
-            if($tipo == '1'){
+            if($tipo == 1){
+                $colspan = 15;
         ?>
             <caption style="font-size: 2em; color: green;"> <strong> Quotations </strong> ( Temporada : <?=$temporada["nombre"]?> ) </caption>
         <?
             }else{
+                $colspan = 18;
         ?>
             <caption style="font-size: 2em; color: green;"> <strong> Quotations <?=$name?> </strong> ( Temporada : <?=$temporada["nombre"]?> ) </caption>
         <?
@@ -237,71 +191,119 @@
                 if(strlen($tituloFiltros) > 46):
             ?>
             <tr>
-                <th colspan="18" style="background: lightsteelblue"> <?=$tituloFiltros?> </th>
+                <th colspan="<?=$colspan?>" style="background: lightsteelblue"> <?=$tituloFiltros?> </th>
             </tr>
             <?php
                 endif;
-            ?>
-            <tr style="font-size: 1em; background: lightgreen">
-                <th> # </th>
-                <th> Número </th>
-                <th> Cliente </th>
-                <th> Especie </th>
-                <th> Observacion </th>
-                <th> Ha Contrated </th>
-                <th> MT2 Contrated </th>
-                <th> Site Contrated </th>
-                <th> USD Contrated </th>
-                <th> EURO Contrated </th>
-                <th> CLP Contrated </th>
-                <th> KG Contrated </th>
-                <th> HA Measured </th>
-                <th> KG Estimated </th>
-                <th> USD Estimated </th>
-                <th> USD Plan </th>
-                <th> KG Export </th>
-                <th> USD Sold </th>
-            </tr>
-        </thead>
 
-        <tbody>
-        <?php
-            if(count($quotation) > 0):
-                $i = 0;
-                foreach($quotation AS $dato):
-                    $i++;
-        ?>
-                    <tr> 
-                        <td><?=$i?></td>
-                        <td><?=$dato["numero_contrato"]?></td>
-                        <td><?=$dato["razon_social"]?></td>
-                        <td><?=$dato["nombre"]?></td>
-                        <td><?=$dato["obs"]?></td>
-                        <td><?=$dato["superficieHA"]?></td>
-                        <td><?=$dato["superficieMT"]?></td>
-                        <td><?=$dato["superficieSi"]?></td>
-                        <td><?=$dato["costoUSD"]?></td>
-                        <td><?=$dato["costoEURO"]?></td>
-                        <td><?=$dato["costoCLP"]?></td>
-                        <td><?=$dato["kgs"]?></td>
-                        <td> Sin Información </td>
-                        <td> Sin Información </td>
-                        <td> Sin Información </td>
-                        <td> Sin Información </td>
-                        <td> Sin Información </td>
-                        <td> Sin Información </td>
-                    </tr>
-        <?php
-                endforeach;
-            else:
-        ?>
-                <tr> 
-                    <td colspan="18" align="center"> No existen registros asociados a los parametros establecidos en la quotation </td>
+                if($tipo == 1):
+            ?>
+                <tr style="font-size: 1em; background: lightgreen">
+                    <th> # </th>
+                    <th> Cliente </th>
+                    <th> Ha Contrated </th>
+                    <th> MT2 Contrated </th>
+                    <th> Site Contrated </th>
+                    <th> USD Contrated </th>
+                    <th> EURO Contrated </th>
+                    <th> CLP Contrated </th>
+                    <th> KG Contrated </th>
+                    <th> HA Measured </th>
+                    <th> KG Estimated </th>
+                    <th> USD Estimated </th>
+                    <th> USD Plan </th>
+                    <th> KG Export </th>
+                    <th> USD Sold </th>
                 </tr>
-        <?php
-            endif;
-        ?>
-        </tbody>
+
+            <?
+                else:
+            ?>
+                <tr style="font-size: 1em; background: lightgreen">
+                    <th> # </th>
+                    <th> Número </th>
+                    <th> Cliente </th>
+                    <th> Especie </th>
+                    <th> Observacion </th>
+                    <th> Ha Contrated </th>
+                    <th> MT2 Contrated </th>
+                    <th> Site Contrated </th>
+                    <th> USD Contrated </th>
+                    <th> EURO Contrated </th>
+                    <th> CLP Contrated </th>
+                    <th> KG Contrated </th>
+                    <th> HA Measured </th>
+                    <th> KG Estimated </th>
+                    <th> USD Estimated </th>
+                    <th> USD Plan </th>
+                    <th> KG Export </th>
+                    <th> USD Sold </th>
+                </tr>
+            <?php
+                endif;
+            ?>
+            </thead>
+
+            <tbody>
+            <?php
+                if(count($quotation) > 0):
+                    $i = 0;
+                    foreach($quotation AS $dato):
+                        $i++;
+                        if($tipo == '1'):
+            ?>
+                            <tr> 
+                                <td><?=$i?></td>
+                                <td><?=$dato["razon_social"]?></td>
+                                <td><?=number_format($dato["superficieHA"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["superficieMT"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["superficieSi"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["costoUSD"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["costoEURO"], 2, ",", "." )?></td>
+                                <td><?=$dato["costoCLP"]?></td>
+                                <td><?=number_format($dato["kgs"], 2, ",", "." )?></td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                            </tr>
+            <?php   
+                        else:
+            ?>
+                            <tr> 
+                                <td><?=$i?></td>
+                                <td><?=$dato["numero_contrato"]?></td>
+                                <td><?=$dato["razon_social"]?></td>
+                                <td><?=$dato["nombre"]?></td>
+                                <td><?=$dato["obs"]?></td>
+                                <td><?=number_format($dato["superficieHA"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["superficieMT"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["superficieSi"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["costoUSD"], 2, ",", "." )?></td>
+                                <td><?=number_format($dato["costoEURO"], 2, ",", "." )?></td>
+                                <td><?=$dato["costoCLP"]?></td>
+                                <td><?=number_format($dato["kgs"], 2, ",", "." )?></td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                                <td> 0 </td>
+                            </tr>
+            <?
+                        endif;
+                    endforeach;
+                else:
+            ?>
+                    <tr> 
+                        <td colspan="<?=$colspan?>" align="center"> No existen registros asociados a los parametros establecidos en la quotation </td>
+                    </tr>
+            <?php
+                endif;
+            ?>
+            </tbody>
     </table>
 </body>
 </html>
